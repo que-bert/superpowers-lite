@@ -1,34 +1,22 @@
 ---
 name: Feature Request
-about: Propose a change or addition to Superpowers
+about: Propose a change or addition to superpowers-lite
 labels: enhancement
 ---
 
-<!--
-BEFORE FILING: Search open AND closed issues. Many features have been
-requested before — some were implemented differently, some are in
-progress, and some were intentionally declined.
--->
+- [ ] I searched existing issues first
 
-- [ ] I searched existing issues and this has not been proposed before
+## Problem
+<!-- What practical problem are you trying to solve? -->
 
-## What problem does this solve?
-<!-- Describe the problem from your own experience. What were you doing,
-     what went wrong or was missing, and why did it matter?
+## Proposed change
+<!-- What do you want this fork to do? -->
 
-     "It would be cool if..." is not a problem statement. -->
+## Why this belongs in superpowers-lite
+<!-- Explain why this should live in the fork rather than being left to local configuration. -->
 
-## Proposed solution
-<!-- What specifically do you want to happen? Be concrete. -->
+## Upstream relationship
+<!-- Should this stay fork-only, or might it also make sense upstream at https://github.com/obra/superpowers? -->
 
-## What alternatives did you consider?
-<!-- What other approaches could solve the same problem? Why is your
-     proposal better? -->
-
-## Is this appropriate for core Superpowers?
-<!-- Would this benefit someone working on a completely different kind
-     of project? If this is specific to your domain, workflow, or a
-     third-party tool, it may belong as its own plugin instead. -->
-
-## Context
-<!-- Optional: version info, harness, model, workflow where you hit this. -->
+## Alternatives considered
+<!-- What else could solve the same problem? -->

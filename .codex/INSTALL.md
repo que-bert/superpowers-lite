@@ -1,6 +1,13 @@
-# Installing Superpowers for Codex
+# Installing Superpowers Lite for Codex
 
-Enable superpowers skills in Codex via native skill discovery. Just clone and symlink.
+Enable this fork's skills in Codex through native skill discovery.
+
+## Why the path still says `superpowers`
+
+Codex discovers skills from `~/.agents/skills/`. This fork keeps the
+visible skill path name `superpowers` for compatibility with existing
+setups and expectations, even though the repository itself is
+`superpowers-lite`.
 
 ## Prerequisites
 
@@ -8,39 +15,27 @@ Enable superpowers skills in Codex via native skill discovery. Just clone and sy
 
 ## Installation
 
-1. **Clone the superpowers repository:**
+1. **Clone this fork:**
+
    ```bash
-   git clone https://github.com/obra/superpowers.git ~/.codex/superpowers
+   git clone https://github.com/que-bert/superpowers-lite.git ~/.codex/superpowers-lite
    ```
 
-2. **Create the skills symlink:**
+2. **Create the compatibility symlink:**
+
    ```bash
    mkdir -p ~/.agents/skills
-   ln -s ~/.codex/superpowers/skills ~/.agents/skills/superpowers
+   ln -s ~/.codex/superpowers-lite/skills ~/.agents/skills/superpowers
    ```
 
    **Windows (PowerShell):**
+
    ```powershell
    New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.agents\skills"
-   cmd /c mklink /J "$env:USERPROFILE\.agents\skills\superpowers" "$env:USERPROFILE\.codex\superpowers\skills"
+   cmd /c mklink /J "$env:USERPROFILE\.agents\skills\superpowers" "$env:USERPROFILE\.codex\superpowers-lite\skills"
    ```
 
-3. **Restart Codex** (quit and relaunch the CLI) to discover the skills.
-
-## Migrating from old bootstrap
-
-If you installed superpowers before native skill discovery, you need to:
-
-1. **Update the repo:**
-   ```bash
-   cd ~/.codex/superpowers && git pull
-   ```
-
-2. **Create the skills symlink** (step 2 above) — this is the new discovery mechanism.
-
-3. **Remove the old bootstrap block** from `~/.codex/AGENTS.md` — any block referencing `superpowers-codex bootstrap` is no longer needed.
-
-4. **Restart Codex.**
+3. **Restart Codex** so it re-discovers skills.
 
 ## Verify
 
@@ -48,20 +43,23 @@ If you installed superpowers before native skill discovery, you need to:
 ls -la ~/.agents/skills/superpowers
 ```
 
-You should see a symlink (or junction on Windows) pointing to your superpowers skills directory.
+You should see the compatibility path pointing at this fork's `skills/`
+directory.
 
 ## Updating
 
 ```bash
-cd ~/.codex/superpowers && git pull
+cd ~/.codex/superpowers-lite && git pull
 ```
-
-Skills update instantly through the symlink.
 
 ## Uninstalling
 
 ```bash
 rm ~/.agents/skills/superpowers
+rm -rf ~/.codex/superpowers-lite
 ```
 
-Optionally delete the clone: `rm -rf ~/.codex/superpowers`.
+Use upstream Superpowers instead if you want the original project and
+its upstream release stream:
+
+- https://github.com/obra/superpowers

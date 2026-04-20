@@ -1,58 +1,43 @@
-# Installing Superpowers for OpenCode
+# Installing Superpowers Lite for OpenCode
+
+This fork keeps the OpenCode package identifier `superpowers` for
+compatibility, but the git source should point at this repository.
 
 ## Prerequisites
 
-- [OpenCode.ai](https://opencode.ai) installed
+- [OpenCode.ai](https://opencode.ai)
 
 ## Installation
 
-Add superpowers to the `plugin` array in your `opencode.json` (global or project-level):
+Add the fork to the `plugin` array in your `opencode.json`:
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]
+  "plugin": ["superpowers@git+https://github.com/que-bert/superpowers-lite.git"]
 }
 ```
 
-Restart OpenCode. That's it — the plugin auto-installs and registers all skills.
+Restart OpenCode after updating the config.
 
-Verify by asking: "Tell me about your superpowers"
+## Verify
 
-## Migrating from the old symlink-based install
+Ask OpenCode to list or load the bundled skills, for example:
 
-If you previously installed superpowers using `git clone` and symlinks, remove the old setup:
-
-```bash
-# Remove old symlinks
-rm -f ~/.config/opencode/plugins/superpowers.js
-rm -rf ~/.config/opencode/skills/superpowers
-
-# Optionally remove the cloned repo
-rm -rf ~/.config/opencode/superpowers
-
-# Remove skills.paths from opencode.json if you added one for superpowers
-```
-
-Then follow the installation steps above.
-
-## Usage
-
-Use OpenCode's native `skill` tool:
-
-```
+```text
 use skill tool to list skills
 use skill tool to load superpowers/brainstorming
 ```
 
 ## Updating
 
-Superpowers updates automatically when you restart OpenCode.
+OpenCode installs from the configured git source. To update, change or
+pull the git ref you want to use.
 
-To pin a specific version:
+Example pinned ref:
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git#v5.0.3"]
+  "plugin": ["superpowers@git+https://github.com/que-bert/superpowers-lite.git#main"]
 }
 ```
 
@@ -60,24 +45,17 @@ To pin a specific version:
 
 ### Plugin not loading
 
-1. Check logs: `opencode run --print-logs "hello" 2>&1 | grep -i superpowers`
-2. Verify the plugin line in your `opencode.json`
-3. Make sure you're running a recent version of OpenCode
+1. Check the git URL in `opencode.json`.
+2. Restart OpenCode after changing config.
+3. Verify your OpenCode version supports git-backed plugins.
 
 ### Skills not found
 
-1. Use `skill` tool to list what's discovered
-2. Check that the plugin is loading (see above)
+1. Confirm the plugin loaded from this fork.
+2. Use OpenCode's native skill tools to inspect what was discovered.
+3. Check that the repo contains valid `SKILL.md` files.
 
-### Tool mapping
+Use upstream Superpowers instead if you want the original project and
+its upstream documentation:
 
-When skills reference Claude Code tools:
-- `TodoWrite` → `todowrite`
-- `Task` with subagents → `@mention` syntax
-- `Skill` tool → OpenCode's native `skill` tool
-- File operations → your native tools
-
-## Getting Help
-
-- Report issues: https://github.com/obra/superpowers/issues
-- Full documentation: https://github.com/obra/superpowers/blob/main/docs/README.opencode.md
+- https://github.com/obra/superpowers

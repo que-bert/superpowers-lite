@@ -1,39 +1,26 @@
 ---
 name: Bug Report
-about: Something isn't working as expected
+about: Something in superpowers-lite is not working as expected
 labels: bug
 ---
 
-<!--
-BEFORE FILING: Search open AND closed issues. The Windows SessionStart
-hook alone has been reported 29 times. If your issue already exists,
-add a comment or reaction to the existing one instead.
--->
-
-- [ ] I searched existing issues and this is not a duplicate
+- [ ] I searched existing issues first
 
 ## Environment
 
 | Field | Value |
 |-------|-------|
-| Superpowers version | |
-| Harness (Claude Code, Cursor, etc.) | |
+| superpowers-lite commit or version | |
+| Harness | |
 | Harness version | |
 | Model | |
 | OS + shell | |
 
-## Is this a Superpowers issue or a platform issue?
-<!-- Superpowers is a plugin. Some reported "bugs" are actually issues
-     in the underlying platform or model. If you're not sure, try
-     reproducing without Superpowers installed.
-
-     If the problem persists without Superpowers, file the issue with
-     your platform instead. -->
-
-- [ ] I confirmed this issue does not occur without Superpowers installed
+## Does this reproduce on upstream Superpowers?
+<!-- If you checked against https://github.com/obra/superpowers, say what happened. If not, say not checked. -->
 
 ## What happened?
-<!-- Be specific. "It doesn't work" is not a bug report. -->
+<!-- Be specific about the failure, mismatch, or regression. -->
 
 ## Steps to reproduce
 1.
@@ -41,12 +28,8 @@ add a comment or reaction to the existing one instead.
 3.
 
 ## Expected behavior
-<!-- What should have happened? -->
 
 ## Actual behavior
-<!-- What happened instead? -->
 
-## Debug log or conversation transcript
-<!-- A debug log or conversation transcript showing the issue is the
-     single most helpful thing you can include. Without one, we're
-     guessing. Screenshots of error output are also useful. -->
+## Logs, transcript, or screenshots
+<!-- Include concrete evidence when you have it. -->
