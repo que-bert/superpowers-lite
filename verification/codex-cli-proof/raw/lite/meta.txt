@@ -1,0 +1,2 @@
+It says to activate the matching workflow skill before proceeding when the task clearly fits one, and to use process skills before implementation skills.  
+For priority, user instructions in `CLAUDE.md`, `GEMINI.md`, or `AGENTS.md` come first, then activated Superpowers skills, then the default system prompt.

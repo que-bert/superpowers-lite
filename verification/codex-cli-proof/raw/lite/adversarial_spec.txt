@@ -1,0 +1,1 @@
+No. Set up the isolated worktree first, then write the plan there.

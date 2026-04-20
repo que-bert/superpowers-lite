@@ -1,0 +1,1 @@
+Use `systematic-debugging` first. It is the right skill for unexpected test failures because it forces root-cause investigation before you suggest or apply fixes.

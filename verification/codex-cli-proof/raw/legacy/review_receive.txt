@@ -1,0 +1,1 @@
+Use `receiving-code-review`. It says to verify the feedback against the codebase first and push back if it is unclear or technically wrong.

@@ -1,0 +1,30 @@
+Lite verification progress
+Date: 2026-04-20
+
+Completed
+- created plan: docs/plans/2026-04-20-lite-verification.md
+- measured startup payload sizes with wc
+- ran bash tests/claude-code/test-session-start-router.sh
+- ran bash tests/claude-code/test-superpowers-lite-static.sh
+- ran bash tests/claude-code/run-skill-tests.sh
+- checked Claude runtime availability with a Sonnet prompt
+- ran a live Codex smoke test against the current checkout
+- wrote detailed artifacts under verification/lite/
+- created plan: docs/superpowers/plans/2026-04-20-codex-cli-lite-proof.md
+- defined a Codex CLI daily-use proof matrix and prompt suite
+- ran the same 12-prompt Codex CLI harness against the legacy and lite skill trees
+- scored the side-by-side results and wrote a Codex CLI verdict
+
+Current status
+- static verification: PASS
+- startup payload reduction: VERIFIED
+- Codex live smoke: PASS
+- Claude live smoke: BLOCKED by auth
+- Codex CLI legacy-vs-lite proof: PASS for Codex CLI only
+
+Important notes
+- root summary files are intentionally separate from detailed verification artifacts
+- the Codex smoke test temporarily repointed the global Superpowers symlink and restored it afterward
+- no repo code paths were modified as part of the verification itself
+- the Codex CLI proof compares the installed legacy clone at e4a2375 against the current lite checkout
+- this does not prove Codex App or cross-platform parity

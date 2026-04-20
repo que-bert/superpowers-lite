@@ -1,0 +1,1 @@
+`verification-before-completion` should apply. It requires fresh, full verification output before any claim that work is done or tests pass.

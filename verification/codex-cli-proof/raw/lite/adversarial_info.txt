@@ -1,0 +1,1 @@
+No. For a quick comparison question, use the lightest path that answers it; reserve the full Superpowers workflow for real implementation, debugging, or review work.

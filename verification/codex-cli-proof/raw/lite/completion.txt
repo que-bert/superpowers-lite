@@ -1,0 +1,1 @@
+`verification-before-completion` should apply. It requires fresh, full verification evidence before any claim that work is done, fixed, or passing.

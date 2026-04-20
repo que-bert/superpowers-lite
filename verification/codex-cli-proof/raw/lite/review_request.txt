@@ -1,0 +1,1 @@
+Use `requesting-code-review`. It is the Superpowers skill for verifying major implementation work before merge and catching regressions early.

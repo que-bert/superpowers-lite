@@ -1,31 +1,93 @@
 #!/usr/bin/env bash
 # Helper functions for Claude Code skill tests
 
-# Run Claude Code with a prompt and capture output
-# Usage: run_claude "prompt text" [timeout_seconds] [allowed_tools]
-run_claude() {
-    local prompt="$1"
-    local timeout="${2:-60}"
-    local allowed_tools="${3:-}"
-    local output_file=$(mktemp)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+SKIP_EXIT_CODE=80
 
-    # Build command
-    local cmd="claude -p \"$prompt\""
+build_claude_cmd() {
+    local prompt="$1"
+    local tools="${2:-\"\"}"
+    local allowed_tools="${3:-}"
+    local extra_args="${4:-}"
+
+    local cmd
+    cmd="claude --bare --plugin-dir \"$REPO_ROOT\" -p \"$prompt\" --tools $tools"
+
     if [ -n "$allowed_tools" ]; then
         cmd="$cmd --allowed-tools=$allowed_tools"
     fi
 
-    # Run Claude in headless mode with timeout
-    if timeout "$timeout" bash -c "$cmd" > "$output_file" 2>&1; then
+    if [ -n "$extra_args" ]; then
+        cmd="$cmd $extra_args"
+    fi
+
+    echo "$cmd"
+}
+
+require_claude_runtime() {
+    local output_file
+    output_file=$(mktemp)
+    local cmd
+    cmd=$(build_claude_cmd "Reply with READY only.")
+
+    if timeout 20 bash -lc "$cmd" > "$output_file" 2>&1; then
+        rm -f "$output_file"
+        return 0
+    fi
+
+    local exit_code=$?
+    local output
+    output=$(cat "$output_file")
+    rm -f "$output_file"
+
+    if echo "$output" | grep -q "Not logged in"; then
+        echo "SKIP: Claude runtime unavailable for integration tests: not logged in"
+        return "$SKIP_EXIT_CODE"
+    fi
+
+    if [ "$exit_code" -eq 124 ]; then
+        echo "SKIP: Claude runtime unavailable for integration tests: readiness check timed out"
+        return "$SKIP_EXIT_CODE"
+    fi
+
+    echo "ERROR: Claude runtime readiness check failed"
+    echo "$output"
+    return 1
+}
+
+# Run Claude Code with a prompt and capture output against the local repo plugin.
+# Usage: run_claude "prompt text" [timeout_seconds] [allowed_tools] [tools] [extra_args]
+run_claude() {
+    local prompt="$1"
+    local timeout="${2:-60}"
+    local allowed_tools="${3:-}"
+    local tools="${4:-\"\"}"
+    local extra_args="${5:-}"
+    local output_file
+    output_file=$(mktemp)
+
+    local cmd
+    cmd=$(build_claude_cmd "$prompt" "$tools" "$allowed_tools" "$extra_args")
+
+    if timeout "$timeout" bash -lc "$cmd" > "$output_file" 2>&1; then
         cat "$output_file"
         rm -f "$output_file"
         return 0
-    else
-        local exit_code=$?
-        cat "$output_file" >&2
-        rm -f "$output_file"
-        return $exit_code
     fi
+
+    local exit_code=$?
+    local output
+    output=$(cat "$output_file")
+    rm -f "$output_file"
+
+    if echo "$output" | grep -q "Not logged in"; then
+        echo "SKIP: Claude runtime unavailable for integration tests: not logged in" >&2
+        return "$SKIP_EXIT_CODE"
+    fi
+
+    echo "$output" >&2
+    return "$exit_code"
 }
 
 # Check if output contains a pattern
@@ -74,7 +136,8 @@ assert_count() {
     local expected="$3"
     local test_name="${4:-test}"
 
-    local actual=$(echo "$output" | grep -c "$pattern" || echo "0")
+    local actual
+    actual=$(echo "$output" | grep -c "$pattern" || echo "0")
 
     if [ "$actual" -eq "$expected" ]; then
         echo "  [PASS] $test_name (found $actual instances)"
@@ -97,9 +160,10 @@ assert_order() {
     local pattern_b="$3"
     local test_name="${4:-test}"
 
-    # Get line numbers where patterns appear
-    local line_a=$(echo "$output" | grep -n "$pattern_a" | head -1 | cut -d: -f1)
-    local line_b=$(echo "$output" | grep -n "$pattern_b" | head -1 | cut -d: -f1)
+    local line_a
+    local line_b
+    line_a=$(echo "$output" | grep -n "$pattern_a" | head -1 | cut -d: -f1)
+    line_b=$(echo "$output" | grep -n "$pattern_b" | head -1 | cut -d: -f1)
 
     if [ -z "$line_a" ]; then
         echo "  [FAIL] $test_name: pattern A not found: $pattern_a"
@@ -123,14 +187,13 @@ assert_order() {
 }
 
 # Create a temporary test project directory
-# Usage: test_project=$(create_test_project)
 create_test_project() {
-    local test_dir=$(mktemp -d)
+    local test_dir
+    test_dir=$(mktemp -d)
     echo "$test_dir"
 }
 
 # Cleanup test project
-# Usage: cleanup_test_project "$test_dir"
 cleanup_test_project() {
     local test_dir="$1"
     if [ -d "$test_dir" ]; then
@@ -139,7 +202,6 @@ cleanup_test_project() {
 }
 
 # Create a simple plan file for testing
-# Usage: create_test_plan "$project_dir" "$plan_name"
 create_test_plan() {
     local project_dir="$1"
     local plan_name="${2:-test-plan}"
@@ -191,8 +253,8 @@ EOF
     echo "$plan_file"
 }
 
-# Export functions for use in tests
 export -f run_claude
+export -f require_claude_runtime
 export -f assert_contains
 export -f assert_not_contains
 export -f assert_count

@@ -1,0 +1,24 @@
+Codex CLI Proof Baseline
+Date: 2026-04-20
+
+Legacy tree
+- path: /home/work/.codex/superpowers/skills
+- commit: e4a2375
+
+Lite candidate
+- path: /home/work/git/superpowers/skills
+- revision: b557648 plus local working-tree changes
+
+Proof criteria
+- Just as well:
+  - lite must preserve every daily-use workflow in the matrix
+  - lite must not introduce a failure where legacy passes
+- If not better:
+  - lite must also show improved lightness or routing precision on informational prompts
+
+Method
+- same Codex CLI
+- same model: gpt-5.4-mini
+- same prompt suite
+- same symlink-swap harness
+- compare raw outputs and score each prompt independently

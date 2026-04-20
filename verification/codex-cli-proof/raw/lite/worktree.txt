@@ -1,0 +1,1 @@
+Superpowers expects you to set up an isolated git worktree before planning or executing feature work. By default, it uses an existing `.worktrees/` directory if present, verifies it is ignored, and only asks where to create one if no convention is already defined.

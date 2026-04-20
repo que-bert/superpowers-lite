@@ -1,5 +1,20 @@
 # Superpowers Release Notes
 
+## Unreleased
+
+### Claude Code Startup Router
+
+- **Compact startup bootstrap** — Claude Code now injects a compact startup router instead of the full `using-superpowers` skill at `SessionStart`. This preserves first-turn workflow steering for design, implementation, debugging, review, and completion work while reducing startup prompt bloat on every session.
+- **Lighter informational turns** — the startup router now explicitly keeps explanation, summarization, lookup, and comparison requests light unless they turn into design or implementation work.
+
+### Workflow and Skill Routing
+
+- **`subagent-driven-development` is the default execution path** — README and skill descriptions now make it explicit that approved implementation plans should prefer `subagent-driven-development`, with `executing-plans` as the fallback when inline or batched execution is preferable.
+- **Sonnet subagents by default** — `subagent-driven-development` now defaults implementer, spec reviewer, and code-quality reviewer subagents to Sonnet unless the user or host environment explicitly requires something else.
+- **`using-superpowers` demoted to reference guidance** — the `using-superpowers` skill now serves as meta/reference documentation instead of the always-injected startup doctrine.
+- **Worktree setup restored to the default development path** — after an approved spec, the default workflow now routes through `using-git-worktrees` before `writing-plans`, matching regular Superpowers' isolated-workspace behavior.
+- **TDD kept inside execution workflows** — `subagent-driven-development` and `executing-plans` now explicitly retain `test-driven-development` as implementation discipline so the compressed skill set does not weaken behavior.
+
 ## v5.0.7 (2026-03-31)
 
 ### GitHub Copilot CLI Support

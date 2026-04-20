@@ -1,0 +1,46 @@
+{
+  "task": "verify superpowers lite startup path",
+  "status": "codex_cli_claim_proven_with_remaining_cross_platform_gaps",
+  "completed": [
+    "Measured compact router versus full using-superpowers startup payload",
+    "Re-ran lite-specific repo-local tests",
+    "Confirmed hot-path skill budgets remain enforced",
+    "Ran a live Codex smoke test against the current checkout",
+    "Defined a Codex CLI daily-use proof matrix",
+    "Ran a side-by-side Codex CLI prompt suite against legacy and lite skill trees",
+    "Proved the Codex CLI claim for the tested baseline and current lite checkout",
+    "Created root-level verification summary files",
+    "Created dedicated verification artifact folder"
+  ],
+  "pending": [
+    "Run a live Claude Code runtime smoke test after local Claude login is available",
+    "Optionally run Claude integration tests beyond the fast local suite",
+    "Prove or disprove the broader cross-platform claim separately for Codex App and other harnesses"
+  ],
+  "blockers": [
+    {
+      "name": "claude_auth",
+      "status": "open",
+      "detail": "claude --bare returned 'Not logged in · Please run /login', so live Claude runtime validation could not proceed"
+    }
+  ],
+  "artifacts": {
+    "root": [
+      "README.verification.md",
+      "progress.txt",
+      "todo.json"
+    ],
+    "verification_folder": [
+      "verification/lite/summary.md",
+      "verification/lite/metrics.txt",
+      "verification/lite/codex-smoke.txt",
+      "verification/lite/claude-checks.txt",
+      "verification/codex-cli-proof/daily-use-matrix.md",
+      "verification/codex-cli-proof/baseline.txt",
+      "verification/codex-cli-proof/prompt-suite.txt",
+      "verification/codex-cli-proof/legacy-results.md",
+      "verification/codex-cli-proof/lite-results.md",
+      "verification/codex-cli-proof/verdict.md"
+    ]
+  }
+}

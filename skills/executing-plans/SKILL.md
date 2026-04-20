@@ -1,6 +1,6 @@
 ---
 name: executing-plans
-description: Use when you have a written implementation plan to execute in a separate session with review checkpoints
+description: Use when you have a written implementation plan and explicitly want inline or separate-session execution instead of the default subagent-driven path
 ---
 
 # Executing Plans
@@ -58,6 +58,7 @@ After all tasks complete and verified:
 - Review plan critically first
 - Follow plan steps exactly
 - Don't skip verifications
+- Use `test-driven-development` when implementing behavior changes from the plan
 - Reference skills when plan says to
 - Stop when blocked, don't guess
 - Never start implementation on main/master branch without explicit user consent

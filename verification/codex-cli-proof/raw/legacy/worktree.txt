@@ -1,0 +1,1 @@
+Create an isolated git worktree before planning or execution. By default, Superpowers prefers an existing `.worktrees/` directory, verifies it is gitignored, and uses that for the new branch.

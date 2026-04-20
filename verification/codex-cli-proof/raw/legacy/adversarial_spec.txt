@@ -1,0 +1,1 @@
+No. `writing-plans` says it should run in a dedicated worktree, so do the isolation setup first unless you already have one.

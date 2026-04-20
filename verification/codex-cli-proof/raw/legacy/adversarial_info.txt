@@ -1,0 +1,3 @@
+No. For a quick comparison, use only the minimal relevant workflow check, not the full build/implementation stack.
+
+

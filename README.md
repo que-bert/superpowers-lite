@@ -14,6 +14,11 @@ Next up, once you say "go", it launches a *subagent-driven-development* process,
 
 There's a bunch more to it, but that's the core of the system. And because the skills trigger automatically, you don't need to do anything special. Your coding agent just has Superpowers.
 
+Superpowers uses a compact startup router to steer the agent toward the
+right workflow without injecting the full methodology into every
+session. Informational requests stay light; design, implementation,
+debugging, and completion work still trigger the full process.
+
 
 ## Sponsorship
 
@@ -118,47 +123,41 @@ gemini extensions update superpowers
 
 ## The Basic Workflow
 
-1. **brainstorming** - Activates before writing code. Refines rough ideas through questions, explores alternatives, presents design in sections for validation. Saves design document.
+Superpowers-lite keeps a small default routed path and leaves the rest available for explicit or manual use.
 
-2. **using-git-worktrees** - Activates after design approval. Creates isolated workspace on new branch, runs project setup, verifies clean test baseline.
+### Core Routed Skills
 
-3. **writing-plans** - Activates with approved design. Breaks work into bite-sized tasks (2-5 minutes each). Every task has exact file paths, complete code, verification steps.
+These are the skills the compact router steers toward for action-oriented work:
 
-4. **subagent-driven-development** or **executing-plans** - Activates with plan. Dispatches fresh subagent per task with two-stage review (spec compliance, then code quality), or executes in batches with human checkpoints.
+- **brainstorming** - Turn a request into an approved spec before implementation.
+- **using-git-worktrees** - Default isolation step after spec approval and before planning or execution.
+- **writing-plans** - Convert an approved spec into an executable implementation plan.
+- **subagent-driven-development** - Default execution path for approved plans.
+- **systematic-debugging** - Default debugging workflow before any fix is proposed.
+- **requesting-code-review** - Review major implementation work before it compounds.
+- **verification-before-completion** - Verify before claiming anything is done or fixed.
+- **receiving-code-review** - Evaluate review feedback rigorously before implementing it.
 
-5. **test-driven-development** - Activates during implementation. Enforces RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit. Deletes code written before tests.
+### Support Skills (manual or explicit use)
 
-6. **requesting-code-review** - Activates between tasks. Reviews against plan, reports issues by severity. Critical issues block progress.
+These remain available, but they are not part of the default hot path:
 
-7. **finishing-a-development-branch** - Activates when tasks complete. Verifies tests, presents options (merge/PR/keep/discard), cleans up worktree.
+- **executing-plans** - Fallback when the user explicitly wants inline execution.
+- **dispatching-parallel-agents** - Explicit parallelization tool for truly independent work.
+- **finishing-a-development-branch** - Completion workflow for merge, PR, keep, or discard decisions.
+- **test-driven-development** - Strict test-first discipline used inside implementation workflows.
+- **writing-skills** - Skill authoring and verification workflow.
+- **using-superpowers** - Reference guidance on how the system fits together.
 
-**The agent checks for relevant skills before any task.** Mandatory workflows, not suggestions.
+**The agent checks for relevant workflows before action-oriented tasks.**
+Informational turns stay light until they become design or implementation work.
 
 ## What's Inside
 
-### Skills Library
-
-**Testing**
-- **test-driven-development** - RED-GREEN-REFACTOR cycle (includes testing anti-patterns reference)
-
-**Debugging**
-- **systematic-debugging** - 4-phase root cause process (includes root-cause-tracing, defense-in-depth, condition-based-waiting techniques)
-- **verification-before-completion** - Ensure it's actually fixed
-
-**Collaboration** 
-- **brainstorming** - Socratic design refinement
-- **writing-plans** - Detailed implementation plans
-- **executing-plans** - Batch execution with checkpoints
-- **dispatching-parallel-agents** - Concurrent subagent workflows
-- **requesting-code-review** - Pre-review checklist
-- **receiving-code-review** - Responding to feedback
-- **using-git-worktrees** - Parallel development branches
-- **finishing-a-development-branch** - Merge/PR decision workflow
-- **subagent-driven-development** - Fast iteration with two-stage review (spec compliance, then code quality)
-
-**Meta**
-- **writing-skills** - Create new skills following best practices (includes testing methodology)
-- **using-superpowers** - Introduction to the skills system
+- **Compact startup router** - Small SessionStart guidance for action-oriented work.
+- **Core routed workflow skills** - The default design, planning, execution, debugging, review, and verification path.
+- **Support skills** - Optional isolation, inline execution, TDD, branch completion, and skill-authoring workflows.
+- **Manual skill access** - The full skill library remains available for explicit invocation.
 
 ## Philosophy
 

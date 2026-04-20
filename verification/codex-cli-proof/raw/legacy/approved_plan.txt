@@ -1,0 +1,1 @@
+The default execution path is the `executing-plans` skill. It runs the approved plan in batches with review checkpoints between them.

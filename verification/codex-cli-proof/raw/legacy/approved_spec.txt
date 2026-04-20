@@ -1,0 +1,1 @@
+By default, the next workflow is `writing-plans` to create the implementation plan. Before writing that plan, the required default step is to be in a dedicated worktree created by `brainstorming`.

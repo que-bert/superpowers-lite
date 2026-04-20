@@ -13,13 +13,17 @@ echo ""
 echo "This test executes a real plan using the skill and verifies:"
 echo "  1. Plan is read once (not per task)"
 echo "  2. Full task text provided to subagents"
-echo "  3. Subagents perform self-review"
-echo "  4. Spec compliance review before code quality"
-echo "  5. Review loops when issues found"
-echo "  6. Spec reviewer reads code independently"
+echo "  3. Spec compliance review before code quality"
+echo "  4. Review loops when issues found"
+echo "  5. Working implementation is produced"
 echo ""
 echo "WARNING: This test may take 10-30 minutes to complete."
 echo ""
+
+require_claude_runtime || {
+    status=$?
+    exit "$status"
+}
 
 # Create test project
 TEST_PROJECT=$(create_test_project)
@@ -126,30 +130,25 @@ I want you to execute the implementation plan at docs/superpowers/plans/implemen
 IMPORTANT: Follow the skill exactly. I will be verifying that you:
 1. Read the plan once at the beginning
 2. Provide full task text to subagents (don't make them read files)
-3. Ensure subagents do self-review before reporting
-4. Run spec compliance review before code quality review
-5. Use review loops when issues are found
+3. Run spec compliance review before code quality review
+4. Use review loops when issues are found
 
 Begin now. Execute the plan.
 EOF
 
-# Note: We use a longer timeout since this is integration testing
-# Use --allowed-tools to enable tool usage in headless mode
-# IMPORTANT: Run from superpowers directory so local dev skills are available
 PROMPT="Change to directory $TEST_PROJECT and then execute the implementation plan at docs/superpowers/plans/implementation-plan.md using the subagent-driven-development skill.
 
 IMPORTANT: Follow the skill exactly. I will be verifying that you:
 1. Read the plan once at the beginning
 2. Provide full task text to subagents (don't make them read files)
-3. Ensure subagents do self-review before reporting
-4. Run spec compliance review before code quality review
-5. Use review loops when issues are found
+3. Run spec compliance review before code quality review
+4. Use review loops when issues are found
 
 Begin now. Execute the plan."
 
 echo "Running Claude (output will be shown below and saved to $OUTPUT_FILE)..."
 echo "================================================================================"
-cd "$SCRIPT_DIR/../.." && timeout 1800 claude -p "$PROMPT" --allowed-tools=all --add-dir "$TEST_PROJECT" --permission-mode bypassPermissions 2>&1 | tee "$OUTPUT_FILE" || {
+cd "$REPO_ROOT" && timeout 1800 claude --bare --plugin-dir "$REPO_ROOT" -p "$PROMPT" --tools default --allowed-tools=all --add-dir "$TEST_PROJECT" --permission-mode bypassPermissions 2>&1 | tee "$OUTPUT_FILE" || {
     echo ""
     echo "================================================================================"
     echo "EXECUTION FAILED (exit code: $?)"
@@ -162,8 +161,7 @@ echo "Execution complete. Analyzing results..."
 echo ""
 
 # Find the session transcript
-# Session files are in ~/.claude/projects/-<working-dir>/<session-id>.jsonl
-WORKING_DIR_ESCAPED=$(echo "$SCRIPT_DIR/../.." | sed 's/\//-/g' | sed 's/^-//')
+WORKING_DIR_ESCAPED=$(echo "$REPO_ROOT" | sed 's/\//-/g' | sed 's/^-//')
 SESSION_DIR="$HOME/.claude/projects/$WORKING_DIR_ESCAPED"
 
 # Find the most recent session file (created during this test run)
@@ -216,8 +214,8 @@ else
 fi
 echo ""
 
-# Test 6: Implementation actually works
-echo "Test 6: Implementation verification..."
+# Test 4: Implementation actually works
+echo "Test 4: Implementation verification..."
 if [ -f "$TEST_PROJECT/src/math.js" ]; then
     echo "  [PASS] src/math.js created"
 
@@ -256,8 +254,8 @@ else
 fi
 echo ""
 
-# Test 7: Git commits show proper workflow
-echo "Test 7: Git commit history..."
+# Test 5: Git commits show proper workflow
+echo "Test 5: Git commit history..."
 commit_count=$(git -C "$TEST_PROJECT" log --oneline | wc -l)
 if [ "$commit_count" -gt 2 ]; then  # Initial + at least 2 task commits
     echo "  [PASS] Multiple commits created ($commit_count total)"
@@ -267,8 +265,8 @@ else
 fi
 echo ""
 
-# Test 8: Check for extra features (spec compliance should catch)
-echo "Test 8: No extra features added (spec compliance)..."
+# Test 6: Check for extra features (spec compliance should catch)
+echo "Test 6: No extra features added (spec compliance)..."
 if grep -q "export function divide\|export function power\|export function subtract" "$TEST_PROJECT/src/math.js" 2>/dev/null; then
     echo "  [WARN] Extra features found (spec review should have caught this)"
     # Not failing on this as it tests reviewer effectiveness
@@ -298,9 +296,7 @@ if [ $FAILED -eq 0 ]; then
     echo "The subagent-driven-development skill correctly:"
     echo "  ✓ Reads plan once at start"
     echo "  ✓ Provides full task text to subagents"
-    echo "  ✓ Enforces self-review"
     echo "  ✓ Runs spec compliance before code quality"
-    echo "  ✓ Spec reviewer verifies independently"
     echo "  ✓ Produces working implementation"
     exit 0
 else

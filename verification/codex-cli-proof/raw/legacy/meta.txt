@@ -1,0 +1,1 @@
+It says to invoke any relevant skill before any response or action, even if there’s only a 1% chance it applies. It also says skill workflows come first, with process skills before implementation skills, and user instructions tell you what to do, not how.

@@ -1,0 +1,1 @@
+`subagent-driven-development` is the default execution path after an approved plan. Use it to carry out the implementation in the current session.

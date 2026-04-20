@@ -1,0 +1,26 @@
+Codex Smoke Test
+Date: 2026-04-20
+
+Environment
+- codex-cli 0.121.0
+- login status: Logged in using ChatGPT
+- model: gpt-5.4-mini
+
+Method
+- Temporarily repointed ~/.agents/skills/superpowers to /home/work/git/superpowers/skills
+- Ran a single codex exec prompt against /home/work/git/superpowers
+- Restored the original symlink immediately after the run
+
+Prompt
+What does the using-superpowers skill require before taking action? Answer in 2 short sentences and mention one other Superpowers skill that it would likely trigger for implementation work.
+
+Observed behavior
+- Codex opened /home/work/git/superpowers/skills/using-superpowers/SKILL.md directly from this checkout
+- Codex answered in a way that matched the current lite workflow description
+
+Final answer
+It requires you to follow the instruction priority order first, then activate the matching workflow skill before proceeding when the task clearly fits. For implementation work, it would likely trigger `subagent-driven-development` after `writing-plans` if there is an approved plan.
+
+Interpretation
+- This is direct live evidence that the current checkout remains usable in Codex
+- The answer reflects the lite reference flow rather than a stale installed copy

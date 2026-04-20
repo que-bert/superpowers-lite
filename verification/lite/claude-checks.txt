@@ -1,0 +1,18 @@
+Claude Runtime Checks
+Date: 2026-04-20
+
+Command attempted
+claude --bare --plugin-dir /home/work/git/superpowers --model sonnet -p "Reply with READY only." --tools ""
+
+Result
+- exit status: 1
+- output: Not logged in · Please run /login
+
+Interpretation
+- Claude Code runtime verification could not proceed in this environment
+- This is an authentication gap, not a repo-local test failure
+
+Repo-local Claude evidence still available
+- tests/claude-code/test-session-start-router.sh: PASS
+- tests/claude-code/test-superpowers-lite-static.sh: PASS
+- tests/claude-code/run-skill-tests.sh: PASS

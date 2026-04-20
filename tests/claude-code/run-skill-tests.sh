@@ -53,13 +53,16 @@ while [[ $# -gt 0 ]]; do
             echo "  --verbose, -v        Show verbose output"
             echo "  --test, -t NAME      Run only the specified test"
             echo "  --timeout SECONDS    Set timeout per test (default: 300)"
-            echo "  --integration, -i    Run integration tests (slow, 10-30 min)"
+            echo "  --integration, -i    Run integration tests (slow, environment-dependent)"
             echo "  --help, -h           Show this help"
             echo ""
             echo "Tests:"
-            echo "  test-subagent-driven-development.sh  Test skill loading and requirements"
+            echo "  test-session-start-router.sh                 Test compact SessionStart payload"
+            echo "  test-superpowers-lite-static.sh             Test core/support split and hot-path budgets"
+            echo "  test-subagent-driven-development-static.sh   Test skill file policy and defaults"
             echo ""
             echo "Integration Tests (use --integration):"
+            echo "  test-subagent-driven-development.sh          Claude CLI skill behavior"
             echo "  test-subagent-driven-development-integration.sh  Full workflow execution"
             exit 0
             ;;
@@ -73,11 +76,14 @@ done
 
 # List of skill tests to run (fast unit tests)
 tests=(
-    "test-subagent-driven-development.sh"
+    "test-session-start-router.sh"
+    "test-superpowers-lite-static.sh"
+    "test-subagent-driven-development-static.sh"
 )
 
 # Integration tests (slow, full execution)
 integration_tests=(
+    "test-subagent-driven-development.sh"
     "test-subagent-driven-development-integration.sh"
 )
 
@@ -95,6 +101,7 @@ fi
 passed=0
 failed=0
 skipped=0
+SKIP_EXIT_CODE=80
 
 # Run each test
 for test in "${tests[@]}"; do
@@ -108,11 +115,6 @@ for test in "${tests[@]}"; do
         echo "  [SKIP] Test file not found: $test"
         skipped=$((skipped + 1))
         continue
-    fi
-
-    if [ ! -x "$test_path" ]; then
-        echo "  Making $test executable..."
-        chmod +x "$test_path"
     fi
 
     start_time=$(date +%s)
@@ -129,12 +131,16 @@ for test in "${tests[@]}"; do
             end_time=$(date +%s)
             duration=$((end_time - start_time))
             echo ""
-            if [ $exit_code -eq 124 ]; then
+            if [ $exit_code -eq $SKIP_EXIT_CODE ]; then
+                echo "  [SKIP] $test (${duration}s)"
+                skipped=$((skipped + 1))
+            elif [ $exit_code -eq 124 ]; then
                 echo "  [FAIL] $test (timeout after ${TIMEOUT}s)"
+                failed=$((failed + 1))
             else
                 echo "  [FAIL] $test (${duration}s)"
+                failed=$((failed + 1))
             fi
-            failed=$((failed + 1))
         fi
     else
         # Capture output for non-verbose mode
@@ -147,15 +153,19 @@ for test in "${tests[@]}"; do
             exit_code=$?
             end_time=$(date +%s)
             duration=$((end_time - start_time))
-            if [ $exit_code -eq 124 ]; then
+            if [ $exit_code -eq $SKIP_EXIT_CODE ]; then
+                echo "  [SKIP] (${duration}s)"
+                skipped=$((skipped + 1))
+            elif [ $exit_code -eq 124 ]; then
                 echo "  [FAIL] (timeout after ${TIMEOUT}s)"
+                failed=$((failed + 1))
             else
                 echo "  [FAIL] (${duration}s)"
+                failed=$((failed + 1))
             fi
             echo ""
             echo "  Output:"
             echo "$output" | sed 's/^/    /'
-            failed=$((failed + 1))
         fi
     fi
 
@@ -173,8 +183,8 @@ echo "  Skipped: $skipped"
 echo ""
 
 if [ "$RUN_INTEGRATION" = false ] && [ ${#integration_tests[@]} -gt 0 ]; then
-    echo "Note: Integration tests were not run (they take 10-30 minutes)."
-    echo "Use --integration flag to run full workflow execution tests."
+    echo "Note: Integration tests were not run."
+    echo "Use --integration flag to run Claude CLI and full workflow execution tests."
     echo ""
 fi
 

@@ -49,20 +49,20 @@ cmd /c mklink /J "$env:USERPROFILE\.agents\skills\superpowers" "$env:USERPROFILE
 
 ## How It Works
 
-Codex has native skill discovery — it scans `~/.agents/skills/` at startup, parses SKILL.md frontmatter, and loads skills on demand. Superpowers skills are made visible through a single symlink:
+Codex has native skill discovery — it scans `~/.agents/skills/` at startup, parses `SKILL.md` frontmatter, and loads skills on demand. Superpowers skills are made visible through a single symlink:
 
 ```
 ~/.agents/skills/superpowers/ → ~/.codex/superpowers/skills/
 ```
 
-The `using-superpowers` skill is discovered automatically and enforces skill usage discipline — no additional configuration needed.
+No extra bootstrap is required for Codex beyond the symlink. Superpowers works through native skill discovery, and any explicit meta guidance comes from the `using-superpowers` reference skill when Codex decides it is relevant.
 
 ## Usage
 
 Skills are discovered automatically. Codex activates them when:
 - You mention a skill by name (e.g., "use brainstorming")
 - The task matches a skill's description
-- The `using-superpowers` skill directs Codex to use one
+- A previously activated Superpowers workflow points to the next one
 
 ### Personal Skills
 

@@ -1,0 +1,1 @@
+By default, Superpowers should do `using-git-worktrees` first, then `writing-plans` to turn the approved spec into a concrete implementation plan. After the plan is approved, the default execution path is `subagent-driven-development` unless the user explicitly wants `executing-plans`.

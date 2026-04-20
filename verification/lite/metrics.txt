@@ -1,0 +1,24 @@
+Superpowers Lite Verification Metrics
+Date: 2026-04-20
+Repo: /home/work/git/superpowers
+
+Startup payload size comparison
+- bootstrap/claude-router.md: 131 words, 1046 bytes
+- skills/using-superpowers/SKILL.md: 383 words, 2836 bytes
+
+Reduction
+- words reduced: 252
+- word reduction percent: 65.80%
+- bytes reduced: 1790
+- byte reduction percent: 63.12%
+
+Hot-path skill budgets from tests/claude-code/test-superpowers-lite-static.sh
+- brainstorming: 436 words, budget 1050
+- writing-plans: 387 words, budget 640
+- systematic-debugging: 526 words, budget 1050
+- subagent-driven-development: 536 words, budget 1050
+
+Fresh static test results
+- test-session-start-router.sh: PASS
+- test-superpowers-lite-static.sh: PASS
+- run-skill-tests.sh: PASS (3 passed, 0 failed, 0 skipped)

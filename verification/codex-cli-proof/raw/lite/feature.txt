@@ -1,0 +1,1 @@
+Use `brainstorming` first. Before implementation begins, you should design the change, get the spec approved by the user, and only then move on to `using-git-worktrees` and `writing-plans`.

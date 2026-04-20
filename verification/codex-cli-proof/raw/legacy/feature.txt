@@ -1,0 +1,1 @@
+Use the `brainstorming` skill first. Before implementation begins, present a design/spec and get the user’s approval; only after that should you move to `writing-plans` and coding.

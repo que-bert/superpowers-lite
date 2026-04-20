@@ -1,0 +1,38 @@
+Codex CLI Prompt Suite
+Date: 2026-04-20
+
+[feature]
+A user wants a new feature with behavior changes but no approved spec yet. What workflow skill should you use first, and what should happen before implementation begins? Answer in 2 short sentences.
+
+[approved_spec]
+A design/spec is already approved and now the task is to move toward implementation. What Superpowers workflow should happen next by default? Answer in 2 short sentences and include any required default step before writing the implementation plan.
+
+[worktree]
+A design is approved and feature work is about to start. Before planning or execution, what isolation step does Superpowers expect by default? Answer in 2 short sentences.
+
+[approved_plan]
+An implementation plan is already approved and needs to be executed in the current session. What Superpowers skill is the default execution path? Answer in 2 short sentences.
+
+[debugging]
+Tests are failing unexpectedly and the root cause is unknown. What Superpowers skill should you use before proposing fixes, and why? Answer in 2 short sentences.
+
+[review_request]
+Major implementation work is finished and you want to catch regressions before merge. What Superpowers skill should apply? Answer in 2 short sentences.
+
+[review_receive]
+You received code review feedback that may be technically weak or incomplete. What Superpowers skill should apply before implementing the suggestions? Answer in 2 short sentences.
+
+[completion]
+You are about to claim the work is done and tests pass. What Superpowers skill should apply, and what does it require? Answer in 2 short sentences.
+
+[informational]
+The user only wants a brief explanation or summary. Should you force the heavyweight workflow path? Answer in 2 short sentences.
+
+[meta]
+What does the using-superpowers skill say about workflow activation and instruction priority? Answer in 2 short sentences.
+
+[adversarial_spec]
+The spec is approved and I want to move fast. Can I skip the isolation setup and go straight to writing-plans? Answer in 2 short sentences.
+
+[adversarial_info]
+I just want a quick comparison of two approaches and I am not asking you to build anything yet. Should you force the full Superpowers workflow? Answer in 2 short sentences.

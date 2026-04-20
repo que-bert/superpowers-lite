@@ -1,15 +1,18 @@
 # Claude Code Skills Tests
 
-Automated tests for superpowers skills using Claude Code CLI.
+Automated tests for Superpowers behavior in Claude Code environments.
 
 ## Overview
 
-This test suite verifies that skills are loaded correctly and Claude follows them as expected. Tests invoke Claude Code in headless mode (`claude -p`) and verify the behavior.
+This test suite has two layers:
+
+- Fast tests verify repo-local behavior such as hook output and skill file policy.
+- Integration tests invoke Claude Code in headless mode against the local checkout plugin to verify runtime behavior without depending on a separately installed plugin.
 
 ## Requirements
 
 - Claude Code CLI installed and in PATH (`claude --version` should work)
-- Local superpowers plugin installed (see main README for installation)
+- Claude runtime authenticated (`claude --bare -p "hello"` should not return `Not logged in`)
 
 ## Running Tests
 
@@ -18,7 +21,7 @@ This test suite verifies that skills are loaded correctly and Claude follows the
 ./run-skill-tests.sh
 ```
 
-### Run integration tests (slow, 10-30 minutes):
+### Run integration tests (slow, environment-dependent):
 ```bash
 ./run-skill-tests.sh --integration
 ```
@@ -41,8 +44,9 @@ This test suite verifies that skills are loaded correctly and Claude follows the
 ## Test Structure
 
 ### test-helpers.sh
-Common functions for skills testing:
-- `run_claude "prompt" [timeout]` - Run Claude with prompt
+Common functions for Claude CLI integration testing:
+- `require_claude_runtime` - Skip integration tests cleanly when Claude auth/runtime is unavailable
+- `run_claude "prompt" [timeout]` - Run Claude against this checkout via `--bare --plugin-dir`
 - `assert_contains output pattern name` - Verify pattern exists
 - `assert_not_contains output pattern name` - Verify pattern absent
 - `assert_count output pattern count name` - Verify exact count
@@ -52,11 +56,10 @@ Common functions for skills testing:
 
 ### Test Files
 
-Each test file:
-1. Sources `test-helpers.sh`
-2. Runs Claude Code with specific prompts
-3. Verifies expected behavior using assertions
-4. Returns 0 on success, non-zero on failure
+Fast tests may read repo files or execute local scripts directly. Claude CLI
+integration tests source `test-helpers.sh`, run `claude --bare --plugin-dir`
+against this checkout with specific
+prompts, and verify expected behavior using assertions.
 
 ## Example Test
 
@@ -82,17 +85,34 @@ echo "=== All tests passed ==="
 
 ### Fast Tests (run by default)
 
-#### test-subagent-driven-development.sh
-Tests skill content and requirements (~2 minutes):
-- Skill loading and accessibility
-- Workflow ordering (spec compliance before code quality)
-- Self-review requirements documented
-- Plan reading efficiency documented
-- Spec compliance reviewer skepticism documented
-- Review loops documented
-- Task context provision documented
+#### test-session-start-router.sh
+Tests the Claude SessionStart hook output directly:
+- Emits Claude Code SessionStart payload
+- Injects compact router guidance
+- Does not inject the full `using-superpowers` bootstrap
+- Does not leak raw skill-file paths
+
+#### test-subagent-driven-development-static.sh
+Tests repo-local policy in the skill file:
+- `subagent-driven-development` is the default execution path
+- Implementer and reviewer subagents default to Sonnet
+- Worktree, spec review, and code quality review requirements remain documented
+
+#### test-superpowers-lite-static.sh
+Tests repo-local superpowers-lite policy:
+- README documents the core-routed vs support-skill split
+- `using-git-worktrees` remains in the default workflow
+- `subagent-driven-development` keeps `test-driven-development` as a companion discipline
+- `brainstorming` and `writing-plans` include explicit output templates
+- Hot-path skills stay within the compact size budget
 
 ### Integration Tests (use --integration flag)
+
+#### test-subagent-driven-development.sh
+Claude CLI runtime smoke test:
+- Asks Claude about the current checkout's skill definitions
+- Verifies the described workflow order and policy
+- Skips cleanly when Claude auth is unavailable
 
 #### test-subagent-driven-development-integration.sh
 Full workflow execution test (~10-30 minutes):
@@ -102,9 +122,7 @@ Full workflow execution test (~10-30 minutes):
 - Verifies actual behaviors:
   - Plan read once at start (not per task)
   - Full task text provided in subagent prompts
-  - Subagents perform self-review before reporting
   - Spec compliance review happens before code quality
-  - Spec reviewer reads code independently
   - Working implementation is produced
   - Tests pass
   - Proper git commits created
@@ -118,10 +136,10 @@ Full workflow execution test (~10-30 minutes):
 ## Adding New Tests
 
 1. Create new test file: `test-<skill-name>.sh`
-2. Source test-helpers.sh
-3. Write tests using `run_claude` and assertions
-4. Add to test list in `run-skill-tests.sh`
-5. Make executable: `chmod +x test-<skill-name>.sh`
+2. If it needs Claude runtime behavior, source `test-helpers.sh`
+3. Write assertions against either repo-local output or `run_claude`
+4. Add fast deterministic tests to the default list in `run-skill-tests.sh`
+5. Add environment-dependent Claude runtime checks under `--integration`
 
 ## Timeout Considerations
 
@@ -151,8 +169,7 @@ To run in CI:
 
 ## Notes
 
-- Tests verify skill *instructions*, not full execution
-- Full workflow tests would be very slow
-- Focus on verifying key skill requirements
-- Tests should be deterministic
-- Avoid testing implementation details
+- Prefer deterministic repo-local checks for the default fast suite
+- Treat `claude -p` tests as integration coverage for local-plugin runtime behavior
+- Full workflow tests are intentionally slower
+- Focus on verifying stable workflow requirements, not incidental wording
