@@ -1,197 +1,135 @@
-# Superpowers
+# Superpowers Lite
 
-Superpowers is a complete software development methodology for your coding agents, built on top of a set of composable skills and some initial instructions that make sure your agent uses them.
+`superpowers-lite` is a fork-focused, lower-overhead variant of
+[Superpowers](https://github.com/obra/superpowers) that keeps the same
+daily-use workflow shape while reducing startup prompt weight and making
+the repo easier to maintain as a practical working fork.
 
-## How it works
+This repository is not trying to replace upstream history or community
+docs. It is documenting the fork as it exists today: a compatibility-
+minded variant with lighter default routing, fork-specific verification,
+and repo-local maintenance notes.
 
-It starts from the moment you fire up your coding agent. As soon as it sees that you're building something, it *doesn't* just jump into trying to write code. Instead, it steps back and asks you what you're really trying to do. 
+## Relationship To Upstream
 
-Once it's teased a spec out of the conversation, it shows it to you in chunks short enough to actually read and digest. 
+Regular Superpowers lives at:
 
-After you've signed off on the design, your agent puts together an implementation plan that's clear enough for an enthusiastic junior engineer with poor taste, no judgement, no project context, and an aversion to testing to follow. It emphasizes true red/green TDD, YAGNI (You Aren't Gonna Need It), and DRY. 
+- https://github.com/obra/superpowers
 
-Next up, once you say "go", it launches a *subagent-driven-development* process, having agents work through each engineering task, inspecting and reviewing their work, and continuing forward. It's not uncommon for Claude to be able to work autonomously for a couple hours at a time without deviating from the plan you put together.
+Use upstream Superpowers if you want the original project, its release
+cadence, and its full upstream documentation set.
 
-There's a bunch more to it, but that's the core of the system. And because the skills trigger automatically, you don't need to do anything special. Your coding agent just has Superpowers.
+Use this fork if you want:
 
-Superpowers uses a compact startup router to steer the agent toward the
-right workflow without injecting the full methodology into every
-session. Informational requests stay light; design, implementation,
-debugging, and completion work still trigger the full process.
+- the lighter startup router introduced here
+- fork-specific verification artifacts and proof notes
+- docs that match this repo instead of mirroring upstream marketing copy
 
+The fork still intentionally preserves important compatibility surfaces
+where they matter for installation and skill discovery. In a few places,
+names stay upstream-compatible on purpose so existing tooling keeps
+working.
 
-## Sponsorship
+## What This Fork Changes
 
-If Superpowers has helped you do stuff that makes money and you are so inclined, I'd greatly appreciate it if you'd consider [sponsoring my opensource work](https://github.com/sponsors/obra).
+- Replaces the expensive full startup injection with a compact router for
+  Claude-facing startup flows
+- Keeps the same core workflow library available for explicit or routed
+  use
+- Prefers a smaller hot path while preserving the same daily-use skills
+  people actually reach for
+- Documents current proof boundaries instead of implying universal parity
 
-Thanks! 
+## Current Verification Status
 
-- Jesse
+The strongest proof in this repo today is:
 
+- Codex CLI daily-use workflow parity against the chosen legacy
+  Superpowers baseline
+- Lite startup context reduction for the Claude-side bootstrap path
 
-## Installation
+Artifacts live under [verification](/home/work/git/superpowers/verification)
+and the short summary is in
+[README.verification.md](/home/work/git/superpowers/README.verification.md).
 
-**Note:** Installation differs by platform. 
+Important boundary:
 
-### Claude Code Official Marketplace
+- The Codex proof is for Codex CLI, not a blanket claim about every host
+  or every future upstream revision.
 
-Superpowers is available via the [official Claude plugin marketplace](https://claude.com/plugins/superpowers)
+## Core Workflow Shape
 
-Install the plugin from Anthropic's official marketplace:
+The default workflow remains recognizably Superpowers-style:
 
-```bash
-/plugin install superpowers@claude-plugins-official
-```
-
-### Claude Code (Superpowers Marketplace)
-
-The Superpowers marketplace provides Superpowers and some other related plugins for Claude Code.
-
-In Claude Code, register the marketplace first:
-
-```bash
-/plugin marketplace add obra/superpowers-marketplace
-```
-
-Then install the plugin from this marketplace:
-
-```bash
-/plugin install superpowers@superpowers-marketplace
-```
-
-### OpenAI Codex CLI
-
-- Open plugin search interface
-
-```bash
-/plugins
-```
-
-Search for Superpowers
-
-```bash
-superpowers
-```
-
-Select `Install Plugin`
-
-### OpenAI Codex App
-
-- In the Codex app, click on Plugins in the sidebar.
-- You should see `Superpowers` in the Coding section. 
-- Click the `+` next to Superpowers and follow the prompts.
-
-
-### Cursor (via Plugin Marketplace)
-
-In Cursor Agent chat, install from marketplace:
-
-```text
-/add-plugin superpowers
-```
-
-or search for "superpowers" in the plugin marketplace.
-
-### OpenCode
-
-Tell OpenCode:
-
-```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.opencode/INSTALL.md
-```
-
-**Detailed docs:** [docs/README.opencode.md](docs/README.opencode.md)
-
-### GitHub Copilot CLI
-
-```bash
-copilot plugin marketplace add obra/superpowers-marketplace
-copilot plugin install superpowers@superpowers-marketplace
-```
-
-### Gemini CLI
-
-```bash
-gemini extensions install https://github.com/obra/superpowers
-```
-
-To update:
-
-```bash
-gemini extensions update superpowers
-```
-
-## The Basic Workflow
-
-Superpowers-lite keeps a small default routed path and leaves the rest available for explicit or manual use.
+1. `brainstorming` for design and requirement clarification
+2. `using-git-worktrees` before isolated implementation work
+3. `writing-plans` for executable implementation plans
+4. `subagent-driven-development` as the preferred execution path when
+   subagents are available
+5. `systematic-debugging` before proposing fixes
+6. `requesting-code-review` and `verification-before-completion` before
+   completion claims
 
 ### Core Routed Skills
 
-These are the skills the compact router steers toward for action-oriented work:
+These are the default hot-path skills the lite router is steering toward
+for action-oriented work:
 
-- **brainstorming** - Turn a request into an approved spec before implementation.
-- **using-git-worktrees** - Default isolation step after spec approval and before planning or execution.
-- **writing-plans** - Convert an approved spec into an executable implementation plan.
-- **subagent-driven-development** - Default execution path for approved plans.
-- **systematic-debugging** - Default debugging workflow before any fix is proposed.
-- **requesting-code-review** - Review major implementation work before it compounds.
-- **verification-before-completion** - Verify before claiming anything is done or fixed.
-- **receiving-code-review** - Evaluate review feedback rigorously before implementing it.
+- **brainstorming** for design and requirement clarification
+- **using-git-worktrees** before isolated implementation work
+- **writing-plans** for executable implementation plans
+- **subagent-driven-development** as the preferred execution path when
+  subagents are available
+- **systematic-debugging** before proposing fixes
+- **requesting-code-review** before problems compound
+- **verification-before-completion** before completion claims
+- **receiving-code-review** when evaluating external review feedback
 
 ### Support Skills (manual or explicit use)
 
-These remain available, but they are not part of the default hot path:
+These remain available without being part of the default compact hot
+path:
 
-- **executing-plans** - Fallback when the user explicitly wants inline execution.
-- **dispatching-parallel-agents** - Explicit parallelization tool for truly independent work.
-- **finishing-a-development-branch** - Completion workflow for merge, PR, keep, or discard decisions.
-- **test-driven-development** - Strict test-first discipline used inside implementation workflows.
-- **writing-skills** - Skill authoring and verification workflow.
-- **using-superpowers** - Reference guidance on how the system fits together.
+- **executing-plans** as the inline or fallback execution path
+- **dispatching-parallel-agents** for explicit parallel work
+- **finishing-a-development-branch** for merge or branch-completion
+  decisions
+- **test-driven-development** for Strict test-first discipline used inside implementation workflows
+- **writing-skills** for skill authoring and validation
+- **using-superpowers** as reference guidance
 
-**The agent checks for relevant workflows before action-oriented tasks.**
-Informational turns stay light until they become design or implementation work.
+## Installation Guides
 
-## What's Inside
+This fork keeps install guidance split by host so each document can be
+accurate about compatibility details:
 
-- **Compact startup router** - Small SessionStart guidance for action-oriented work.
-- **Core routed workflow skills** - The default design, planning, execution, debugging, review, and verification path.
-- **Support skills** - Optional isolation, inline execution, TDD, branch completion, and skill-authoring workflows.
-- **Manual skill access** - The full skill library remains available for explicit invocation.
+- [Codex guide](docs/README.codex.md)
+- [OpenCode guide](docs/README.opencode.md)
 
-## Philosophy
+If you are adapting this fork to another host, keep the runtime behavior
+compatible first and then update the docs to match that host's real
+installation story.
 
-- **Test-Driven Development** - Write tests first, always
-- **Systematic over ad-hoc** - Process over guessing
-- **Complexity reduction** - Simplicity as primary goal
-- **Evidence over claims** - Verify before declaring success
+## Repo Notes
 
-Read [the original release announcement](https://blog.fsck.com/2025/10/09/superpowers/).
+- The repo name is `superpowers-lite`, but some runtime-visible names are
+  still `superpowers` for compatibility with existing plugin loaders and
+  skill paths.
+- Verification artifacts belong in the dedicated `verification/`
+  directory.
+- Root-level status files are intentionally small and operational:
+  `README.verification.md`, `progress.txt`, and `todo.json`.
 
-## Contributing
+## Testing
 
-The general contribution process for Superpowers is below. Keep in mind that we don't generally accept contributions of new skills and that any updates to skills must work across all of the coding agents we support.
+For the current testing and verification workflow, see
+[docs/testing.md](/home/work/git/superpowers/docs/testing.md).
 
-1. Fork the repository
-2. Switch to the 'dev' branch
-3. Create a branch for your work
-4. Follow the `writing-skills` skill for creating and testing new and modified skills
-5. Submit a PR, being sure to fill in the pull request template.
+## Release Notes
 
-See `skills/writing-skills/SKILL.md` for the complete guide.
-
-## Updating
-
-Superpowers updates are somewhat coding-agent dependent, but are often automatic.
+Fork-specific release history lives in
+[RELEASE-NOTES.md](/home/work/git/superpowers/RELEASE-NOTES.md).
 
 ## License
 
-MIT License - see LICENSE file for details
-
-## Community
-
-Superpowers is built by [Jesse Vincent](https://blog.fsck.com) and the rest of the folks at [Prime Radiant](https://primeradiant.com).
-
-- **Discord**: [Join us](https://discord.gg/35wsABTejz) for community support, questions, and sharing what you're building with Superpowers
-- **Issues**: https://github.com/obra/superpowers/issues
-- **Release announcements**: [Sign up](https://primeradiant.com/superpowers/) to get notified about new versions
+MIT License. See [LICENSE](/home/work/git/superpowers/LICENSE).

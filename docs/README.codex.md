@@ -1,38 +1,53 @@
-# Superpowers for Codex
+# Superpowers Lite For Codex CLI
 
-Guide for using Superpowers with OpenAI Codex via native skill discovery.
+This guide documents how this fork is intended to be used with Codex CLI.
+It is fork-specific and should be read together with the root
+[README](../README.md).
 
-## Quick Install
+If you want the original project instead, use upstream Superpowers:
 
-Tell Codex:
+- https://github.com/obra/superpowers
 
-```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.codex/INSTALL.md
-```
+## What Stays Compatible
 
-## Manual Installation
+This fork keeps the Codex skill-discovery path compatible with regular
+Superpowers:
+
+- the visible skills directory still lives at `~/.agents/skills/superpowers`
+- Codex still discovers `SKILL.md` files natively
+- no extra Codex bootstrap layer is required
+
+The symlink name stays `superpowers` on purpose. That keeps existing
+Codex setups and expectations stable even though the repo itself is
+`superpowers-lite`.
+
+## Install
 
 ### Prerequisites
 
-- OpenAI Codex CLI
+- Codex CLI
 - Git
 
-### Steps
+### Recommended setup
 
-1. Clone the repo:
+1. Clone this fork:
+
    ```bash
-   git clone https://github.com/obra/superpowers.git ~/.codex/superpowers
+   git clone https://github.com/que-bert/superpowers-lite.git ~/.codex/superpowers-lite
    ```
 
-2. Create the skills symlink:
+2. Expose the skills under the compatibility path Codex already expects:
+
    ```bash
    mkdir -p ~/.agents/skills
-   ln -s ~/.codex/superpowers/skills ~/.agents/skills/superpowers
+   ln -s ~/.codex/superpowers-lite/skills ~/.agents/skills/superpowers
    ```
 
-3. Restart Codex.
+3. Restart Codex CLI.
 
-4. **For subagent skills** (optional): Skills like `dispatching-parallel-agents` and `subagent-driven-development` require Codex's multi-agent feature. Add to your Codex config:
+4. If you want subagent-oriented workflows, enable Codex multi-agent
+   support:
+
    ```toml
    [features]
    multi_agent = true
@@ -40,87 +55,67 @@ Fetch and follow instructions from https://raw.githubusercontent.com/obra/superp
 
 ### Windows
 
-Use a junction instead of a symlink (works without Developer Mode):
+Use a junction if symlinks are inconvenient:
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.agents\skills"
-cmd /c mklink /J "$env:USERPROFILE\.agents\skills\superpowers" "$env:USERPROFILE\.codex\superpowers\skills"
+cmd /c mklink /J "$env:USERPROFILE\.agents\skills\superpowers" "$env:USERPROFILE\.codex\superpowers-lite\skills"
 ```
 
 ## How It Works
 
-Codex has native skill discovery — it scans `~/.agents/skills/` at startup, parses `SKILL.md` frontmatter, and loads skills on demand. Superpowers skills are made visible through a single symlink:
+Codex CLI performs native skill discovery from `~/.agents/skills/`. This
+fork relies on that behavior directly rather than adding another startup
+layer on top of Codex.
 
-```
-~/.agents/skills/superpowers/ → ~/.codex/superpowers/skills/
-```
+The current proof bundle for this repo verifies that, for the tested
+prompt suite and selected legacy baseline, the lite fork preserves the
+same daily-use workflow coverage and improves the execution-path answer
+for Codex CLI.
 
-No extra bootstrap is required for Codex beyond the symlink. Superpowers works through native skill discovery, and any explicit meta guidance comes from the `using-superpowers` reference skill when Codex decides it is relevant.
+See:
 
-## Usage
-
-Skills are discovered automatically. Codex activates them when:
-- You mention a skill by name (e.g., "use brainstorming")
-- The task matches a skill's description
-- A previously activated Superpowers workflow points to the next one
-
-### Personal Skills
-
-Create your own skills in `~/.agents/skills/`:
-
-```bash
-mkdir -p ~/.agents/skills/my-skill
-```
-
-Create `~/.agents/skills/my-skill/SKILL.md`:
-
-```markdown
----
-name: my-skill
-description: Use when [condition] - [what it does]
----
-
-# My Skill
-
-[Your skill content here]
-```
-
-The `description` field is how Codex decides when to activate a skill automatically — write it as a clear trigger condition.
+- [verification/codex-cli-proof/verdict.md](/home/work/git/superpowers/verification/codex-cli-proof/verdict.md)
+- [verification/codex-cli-proof/daily-use-matrix.md](/home/work/git/superpowers/verification/codex-cli-proof/daily-use-matrix.md)
 
 ## Updating
 
 ```bash
-cd ~/.codex/superpowers && git pull
+cd ~/.codex/superpowers-lite && git pull
 ```
 
-Skills update instantly through the symlink.
+The active skills update through the same symlink.
 
 ## Uninstalling
 
 ```bash
 rm ~/.agents/skills/superpowers
+rm -rf ~/.codex/superpowers-lite
 ```
 
-**Windows (PowerShell):**
+Windows:
+
 ```powershell
 Remove-Item "$env:USERPROFILE\.agents\skills\superpowers"
+Remove-Item -Recurse -Force "$env:USERPROFILE\.codex\superpowers-lite"
 ```
-
-Optionally delete the clone: `rm -rf ~/.codex/superpowers` (Windows: `Remove-Item -Recurse -Force "$env:USERPROFILE\.codex\superpowers"`).
 
 ## Troubleshooting
 
-### Skills not showing up
+### Skills do not appear
 
-1. Verify the symlink: `ls -la ~/.agents/skills/superpowers`
-2. Check skills exist: `ls ~/.codex/superpowers/skills`
-3. Restart Codex — skills are discovered at startup
+1. Check the symlink or junction target.
+2. Confirm the `skills/` directory exists in the cloned fork.
+3. Restart Codex CLI so skill discovery runs again.
 
-### Windows junction issues
+### You already have upstream installed
 
-Junctions normally work without special permissions. If creation fails, try running PowerShell as administrator.
+Either replace the existing `~/.agents/skills/superpowers` target with
+this fork or keep upstream in place. Do not point the same compatibility
+path at two different clones.
 
-## Getting Help
+## Support Boundaries
 
-- Report issues: https://github.com/obra/superpowers/issues
-- Main documentation: https://github.com/obra/superpowers
+This doc describes the fork's intended Codex CLI integration. The
+current verification bundle proves Codex CLI behavior only; it does not
+claim universal parity across every Codex host.
