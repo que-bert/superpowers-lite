@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Use during implementation when you are actively changing behavior and need strict test-first discipline
+description: Use when implementing any feature or bugfix, before writing implementation code
 ---
 
 # Test-Driven Development (TDD)

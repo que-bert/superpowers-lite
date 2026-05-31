@@ -1,4 +1,25 @@
 Lite verification progress
+
+=== 2026-05-30: Lossless re-sync to upstream v5.1.0 ===
+Completed
+- re-synced all 14 skills to be byte-identical to upstream v5.1.0 [DONE]
+- reverted the subagent-driven-development Sonnet pin to upstream
+  role-based model guidance (cross-harness) [DONE]
+- corrected router workflow ordering to match upstream [DONE]
+- bumped version metadata to 5.1.0 across plugin/marketplace/package/
+  gemini/cursor [DONE]
+- added Claude Code install section to README; fixed broken /home/work
+  links in README.md, docs/README.codex.md, docs/testing.md [DONE]
+- verified the Codex ~/.agents/skills discovery path against OpenAI docs
+  (it is correct) [DONE]
+- rewrote lite contract tests for the new design; all three Claude-side
+  suites pass [DONE]
+- re-measured startup payload: 172 vs 787 words (78.1% reduction) [DONE]
+Notes
+- the 2026-04-20 "hot-path skill budgets" claim is superseded; skills are
+  no longer condensed
+- the earlier Codex CLI parity proof is retained as history only
+
 Date: 2026-04-20
 
 Completed

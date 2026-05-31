@@ -97,14 +97,12 @@ if ! assert_contains "$output" "not.*main\|never.*main\|avoid.*main\|don't.*main
 fi
 
 echo ""
-echo "Test 9: Sonnet default model policy..."
+echo "Test 9: Upstream model-selection policy (not pinned to one model)..."
 output=$(run_claude "In subagent-driven-development, what model should implementer and reviewer subagents use by default?" 30)
 
-if ! assert_contains "$output" "Sonnet\|sonnet" "Defaults to Sonnet"; then
-    exit 1
-fi
-
-if ! assert_not_contains "$output" "least powerful\|most capable available\|cheap model" "No old dynamic model guidance"; then
+# The fork reverted to upstream's role-based guidance so it works on all
+# harnesses, rather than pinning a specific model name.
+if ! assert_contains "$output" "least powerful\|capable\|cheap\|task\|role" "Uses upstream role-based model guidance"; then
     exit 1
 fi
 

@@ -1,5 +1,13 @@
 # Lite Verification README
 
+> **2026-05-30:** The repo was re-synced so all skills are byte-identical
+> to upstream `v5.1.0`. Efficiency now comes solely from the compact
+> startup router (172 vs 787 words injected at startup; ~78% smaller).
+> The earlier "hot-path skill budget" claims and the Codex CLI parity
+> proof in `verification/codex-cli-proof/` reflect the previous fork
+> state and are retained as history, not current claims. See
+> `RELEASE-NOTES.md` (2026-05-30).
+
 This repo includes a small verification bundle for the current Superpowers lite path.
 
 Top-level files:

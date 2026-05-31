@@ -68,15 +68,16 @@ Codex CLI performs native skill discovery from `~/.agents/skills/`. This
 fork relies on that behavior directly rather than adding another startup
 layer on top of Codex.
 
-The current proof bundle for this repo verifies that, for the tested
-prompt suite and selected legacy baseline, the lite fork preserves the
-same daily-use workflow coverage and improves the execution-path answer
-for Codex CLI.
+Because the skill library is kept byte-identical to upstream `v5.1.0`,
+Codex sees the same skills as upstream Superpowers. The fork's only
+change (the compact Claude `SessionStart` router) does not affect Codex,
+which discovers skills natively from disk.
 
-See:
+An earlier Codex CLI parity proof was run against the previous fork
+state and is retained as history, not as a current claim:
 
-- [verification/codex-cli-proof/verdict.md](/home/work/git/superpowers/verification/codex-cli-proof/verdict.md)
-- [verification/codex-cli-proof/daily-use-matrix.md](/home/work/git/superpowers/verification/codex-cli-proof/daily-use-matrix.md)
+- [../verification/codex-cli-proof/verdict.md](../verification/codex-cli-proof/verdict.md)
+- [../verification/codex-cli-proof/daily-use-matrix.md](../verification/codex-cli-proof/daily-use-matrix.md)
 
 ## Updating
 

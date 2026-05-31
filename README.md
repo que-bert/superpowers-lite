@@ -1,14 +1,16 @@
 # Superpowers Lite
 
-`superpowers-lite` is a fork-focused, lower-overhead variant of
-[Superpowers](https://github.com/obra/superpowers) that keeps the same
-daily-use workflow shape while reducing startup prompt weight and making
-the repo easier to maintain as a practical working fork.
+`superpowers-lite` is a fork of
+[Superpowers](https://github.com/obra/superpowers) with one behavioral
+change: it replaces the heavy startup injection with a compact router,
+so every session pays less context up front. The skill library itself is
+kept byte-for-byte in sync with upstream, so the workflow behaves the
+same once a skill is actually invoked.
 
 This repository is not trying to replace upstream history or community
-docs. It is documenting the fork as it exists today: a compatibility-
-minded variant with lighter default routing, fork-specific verification,
-and repo-local maintenance notes.
+docs. It documents the fork as it exists today: an upstream-faithful
+skill library with a lighter startup path, plus fork-specific
+verification and maintenance notes.
 
 ## Relationship To Upstream
 
@@ -17,119 +19,149 @@ Regular Superpowers lives at:
 - https://github.com/obra/superpowers
 
 Use upstream Superpowers if you want the original project, its release
-cadence, and its full upstream documentation set.
+cadence, its full documentation set, and its standard plugin-marketplace
+install.
 
 Use this fork if you want:
 
 - the lighter startup router introduced here
+- the same skills, kept in sync with upstream (currently `v5.1.0`)
 - fork-specific verification artifacts and proof notes
-- docs that match this repo instead of mirroring upstream marketing copy
 
-The fork still intentionally preserves important compatibility surfaces
-where they matter for installation and skill discovery. In a few places,
-names stay upstream-compatible on purpose so existing tooling keeps
-working.
+The fork intentionally preserves upstream-compatible names where they
+matter for installation and skill discovery. In a few places, names stay
+`superpowers` on purpose so existing tooling keeps working.
 
 ## What This Fork Changes
 
-- Replaces the expensive full startup injection with a compact router for
-  Claude-facing startup flows
-- Keeps the same core workflow library available for explicit or routed
-  use
-- Prefers a smaller hot path while preserving the same daily-use skills
-  people actually reach for
-- Documents current proof boundaries instead of implying universal parity
+The fork makes exactly one runtime change and keeps everything else
+upstream:
 
-## Current Verification Status
+- **Changed:** the `SessionStart` hook injects a compact router
+  (`bootstrap/claude-router.md`, ~170 words) instead of the full
+  `using-superpowers` skill (~790 words). The full skill is still
+  available and loads on demand when invoked.
+- **Unchanged:** all 14 skills are byte-identical to upstream `v5.1.0`.
+  Nothing in any skill body is trimmed, reordered, or model-pinned. Once
+  a skill runs, behavior matches upstream exactly.
 
-The strongest proof in this repo today is:
+This is the lossless part of the design: the efficiency comes only from
+what is injected at startup, not from cutting skill content.
 
-- Codex CLI daily-use workflow parity against the chosen legacy
-  Superpowers baseline
-- Lite startup context reduction for the Claude-side bootstrap path
+## Installation
 
-Artifacts live under [verification](/home/work/git/superpowers/verification)
-and the short summary is in
-[README.verification.md](/home/work/git/superpowers/README.verification.md).
+Install for each harness you use.
 
-Important boundary:
+### Claude Code
 
-- The Codex proof is for Codex CLI, not a blanket claim about every host
-  or every future upstream revision.
+This fork is not on Anthropic's official marketplace, so install it from
+this repository's bundled marketplace:
+
+1. Register the marketplace:
+
+   ```text
+   /plugin marketplace add que-bert/superpowers-lite
+   ```
+
+2. Install the plugin (the plugin name stays `superpowers`; the
+   marketplace name is `superpowers-dev`):
+
+   ```text
+   /plugin install superpowers@superpowers-dev
+   ```
+
+3. Restart Claude Code (or run `/plugin` to confirm it is enabled).
+
+To install from a local clone instead:
+
+```text
+/plugin marketplace add /path/to/superpowers-lite
+/plugin install superpowers@superpowers-dev
+```
+
+### Codex CLI
+
+See the [Codex guide](docs/README.codex.md). In short, clone the fork and
+expose its `skills/` directory on Codex's native discovery path
+(`~/.agents/skills/superpowers`).
+
+### OpenCode
+
+See the [OpenCode guide](docs/README.opencode.md). In short, add
+`superpowers@git+https://github.com/que-bert/superpowers-lite.git` to the
+`plugin` array in `opencode.json`.
 
 ## Core Workflow Shape
 
-The default workflow remains recognizably Superpowers-style:
+The startup router steers the standard upstream workflow:
 
 1. `brainstorming` for design and requirement clarification
-2. `using-git-worktrees` before isolated implementation work
-3. `writing-plans` for executable implementation plans
+2. `writing-plans` for an executable implementation plan
+3. `using-git-worktrees` before isolated implementation work
 4. `subagent-driven-development` as the preferred execution path when
-   subagents are available
+   subagents are available (`executing-plans` for inline or
+   separate-session execution)
 5. `systematic-debugging` before proposing fixes
-6. `requesting-code-review` and `verification-before-completion` before
-   completion claims
+6. `requesting-code-review` / `receiving-code-review` around review
+7. `verification-before-completion` before completion claims
 
-### Core Routed Skills
+### Full Skill Library
 
-These are the default hot-path skills the lite router is steering toward
-for action-oriented work:
+All upstream skills ship and are available for manual or autonomous
+invocation, identical to upstream `v5.1.0`:
 
-- **brainstorming** for design and requirement clarification
-- **using-git-worktrees** before isolated implementation work
-- **writing-plans** for executable implementation plans
-- **subagent-driven-development** as the preferred execution path when
-  subagents are available
-- **systematic-debugging** before proposing fixes
-- **requesting-code-review** before problems compound
-- **verification-before-completion** before completion claims
-- **receiving-code-review** when evaluating external review feedback
+`brainstorming`, `writing-plans`, `using-git-worktrees`,
+`subagent-driven-development`, `executing-plans`,
+`dispatching-parallel-agents`, `systematic-debugging`,
+`test-driven-development`, `requesting-code-review`,
+`receiving-code-review`, `verification-before-completion`,
+`finishing-a-development-branch`, `writing-skills`,
+`using-superpowers`.
 
-### Support Skills (manual or explicit use)
+The router only changes which guidance is *injected at startup*. It does
+not remove any skill from the library or change any skill's behavior.
 
-These remain available without being part of the default compact hot
-path:
+## Current Verification Status
 
-- **executing-plans** as the inline or fallback execution path
-- **dispatching-parallel-agents** for explicit parallel work
-- **finishing-a-development-branch** for merge or branch-completion
-  decisions
-- **test-driven-development** for Strict test-first discipline used inside implementation workflows
-- **writing-skills** for skill authoring and validation
-- **using-superpowers** as reference guidance
+Measured on this checkout (router vs. the upstream startup injection):
 
-## Installation Guides
+- `bootstrap/claude-router.md`: 172 words, 1362 bytes
+- `skills/using-superpowers/SKILL.md` (what upstream injects): 787 words,
+  5421 bytes
+- Startup payload reduction: **78.1% fewer words, 74.9% fewer bytes**
 
-This fork keeps install guidance split by host so each document can be
-accurate about compatibility details:
+Repo-local contract tests (`tests/claude-code/`) verify that:
 
-- [Codex guide](docs/README.codex.md)
-- [OpenCode guide](docs/README.opencode.md)
+- the `SessionStart` hook injects the compact router, not the full
+  `using-superpowers` skill
+- the router preserves the upstream workflow ordering
+- the skills are not condensed and the Sonnet model pin is not present
+  (i.e., they match the upstream `v5.1.0` contract)
 
-If you are adapting this fork to another host, keep the runtime behavior
-compatible first and then update the docs to match that host's real
-installation story.
+See [README.verification.md](README.verification.md) and the
+[verification](verification/) directory. The earlier Codex CLI parity
+proof in [verification/codex-cli-proof](verification/codex-cli-proof/)
+was run against the previous fork state and is retained as history; it is
+not a current claim.
 
 ## Repo Notes
 
-- The repo name is `superpowers-lite`, but some runtime-visible names are
-  still `superpowers` for compatibility with existing plugin loaders and
-  skill paths.
-- Verification artifacts belong in the dedicated `verification/`
-  directory.
+- The repo name is `superpowers-lite`, but runtime-visible names stay
+  `superpowers` for compatibility with plugin loaders and skill paths.
+- Verification artifacts belong in the `verification/` directory.
 - Root-level status files are intentionally small and operational:
   `README.verification.md`, `progress.txt`, and `todo.json`.
 
 ## Testing
 
-For the current testing and verification workflow, see
-[docs/testing.md](/home/work/git/superpowers/docs/testing.md).
+See [docs/testing.md](docs/testing.md) for the testing and verification
+workflow.
 
 ## Release Notes
 
 Fork-specific release history lives in
-[RELEASE-NOTES.md](/home/work/git/superpowers/RELEASE-NOTES.md).
+[RELEASE-NOTES.md](RELEASE-NOTES.md).
 
 ## License
 
-MIT License. See [LICENSE](/home/work/git/superpowers/LICENSE).
+MIT License. See [LICENSE](LICENSE).

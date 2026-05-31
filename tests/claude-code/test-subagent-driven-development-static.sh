@@ -30,21 +30,26 @@ fi
 
 content="$(cat "$SKILL_FILE")"
 
-echo "Test 1: Default execution path..."
-assert_contains "$content" "Default execution path.*prefer this skill" "Uses subagent-driven-development as default execution path"
+assert_lacks() {
+    local content="$1" pattern="$2" test_name="$3"
+    if echo "$content" | grep -Eq "$pattern"; then
+        echo "  [FAIL] $test_name (unexpected: $pattern)"; exit 1
+    else
+        echo "  [PASS] $test_name"
+    fi
+}
+
+echo "Test 1: Model policy is upstream-faithful (not pinned to Sonnet)..."
+# The fork reverted the Sonnet pin so the workflow runs on all harnesses.
+assert_lacks "$content" "Default all implementation and review subagents to Sonnet" "No Sonnet default-pin policy"
+assert_lacks "$content" "Implementer subagents: Sonnet" "Implementers are not pinned to Sonnet"
 echo ""
 
-echo "Test 2: Sonnet defaults..."
-assert_contains "$content" "Default all implementation and review subagents to Sonnet" "States Sonnet default policy"
-assert_contains "$content" "Implementer subagents: Sonnet" "Implementers default to Sonnet"
-assert_contains "$content" "Spec reviewer subagents: Sonnet" "Spec reviewers default to Sonnet"
-assert_contains "$content" "Code quality reviewer subagents: Sonnet" "Code quality reviewers default to Sonnet"
-echo ""
-
-echo "Test 3: Workflow requirements..."
+echo "Test 2: Two-stage review workflow is present..."
 assert_contains "$content" "using-git-worktrees" "Requires worktree workflow"
 assert_contains "$content" "spec compliance review" "Includes spec compliance review"
 assert_contains "$content" "code quality review" "Includes code quality review"
+assert_contains "$content" "test-driven-development" "Keeps TDD companion skill"
 echo ""
 
 echo "=== All static subagent-driven-development tests passed ==="

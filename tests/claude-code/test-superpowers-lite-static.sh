@@ -1,86 +1,110 @@
 #!/usr/bin/env bash
 # Test: superpowers-lite static policy
-# Verifies repo-local skill contracts without depending on Claude CLI runtime
+#
+# Verifies the lite design contract without depending on a Claude runtime:
+#   1. Docs cover the fork identity and Claude Code install.
+#   2. The compact router is the startup efficiency mechanism and keeps
+#      the upstream workflow ordering.
+#   3. Skills are upstream-faithful (NOT condensed, NOT model-pinned).
+#   4. The startup payload is materially smaller than the upstream
+#      using-superpowers injection.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 assert_file_contains() {
-    local file="$1"
-    local pattern="$2"
-    local test_name="$3"
-
+    local file="$1" pattern="$2" name="$3"
     if grep -Eq "$pattern" "$file"; then
-        echo "  [PASS] $test_name"
+        echo "  [PASS] $name"
     else
-        echo "  [FAIL] $test_name"
-        echo "  File: $file"
-        echo "  Expected pattern: $pattern"
+        echo "  [FAIL] $name"
+        echo "         file: $file"
+        echo "         expected pattern: $pattern"
         exit 1
+    fi
+}
+
+assert_file_lacks() {
+    local file="$1" pattern="$2" name="$3"
+    if grep -Eq "$pattern" "$file"; then
+        echo "  [FAIL] $name"
+        echo "         file: $file"
+        echo "         unexpected pattern present: $pattern"
+        exit 1
+    else
+        echo "  [PASS] $name"
     fi
 }
 
 assert_max_words() {
-    local file="$1"
-    local max_words="$2"
-    local test_name="$3"
-    local words
-
+    local file="$1" max="$2" name="$3" words
     words="$(wc -w < "$file" | tr -d ' ')"
-
-    if [ "$words" -le "$max_words" ]; then
-        echo "  [PASS] $test_name ($words <= $max_words words)"
+    if [ "$words" -le "$max" ]; then
+        echo "  [PASS] $name ($words <= $max words)"
     else
-        echo "  [FAIL] $test_name ($words > $max_words words)"
-        echo "  File: $file"
-        exit 1
+        echo "  [FAIL] $name ($words > $max words)"; exit 1
     fi
 }
 
-README_FILE="$REPO_ROOT/README.md"
-BRAINSTORMING_FILE="$REPO_ROOT/skills/brainstorming/SKILL.md"
-WRITING_PLANS_FILE="$REPO_ROOT/skills/writing-plans/SKILL.md"
-SYSTEMATIC_DEBUGGING_FILE="$REPO_ROOT/skills/systematic-debugging/SKILL.md"
-SUBAGENT_FILE="$REPO_ROOT/skills/subagent-driven-development/SKILL.md"
+assert_min_words() {
+    local file="$1" min="$2" name="$3" words
+    words="$(wc -w < "$file" | tr -d ' ')"
+    if [ "$words" -ge "$min" ]; then
+        echo "  [PASS] $name ($words >= $min words)"
+    else
+        echo "  [FAIL] $name ($words < $min words) — skill looks condensed"; exit 1
+    fi
+}
+
+README="$REPO_ROOT/README.md"
+ROUTER="$REPO_ROOT/bootstrap/claude-router.md"
+BRAINSTORMING="$REPO_ROOT/skills/brainstorming/SKILL.md"
+SDD="$REPO_ROOT/skills/subagent-driven-development/SKILL.md"
+SYSDEBUG="$REPO_ROOT/skills/systematic-debugging/SKILL.md"
+USING="$REPO_ROOT/skills/using-superpowers/SKILL.md"
 
 echo "=== Test: superpowers-lite static policy ==="
 echo ""
 
-echo "Test 1: README documents core and support skill split..."
-assert_file_contains "$README_FILE" "^### Core Routed Skills$" "README has core-routed section"
-assert_file_contains "$README_FILE" "^### Support Skills \\(manual or explicit use\\)$" "README has support-skill section"
-assert_file_contains "$README_FILE" "\\*\\*brainstorming\\*\\*" "README lists brainstorming as core"
-assert_file_contains "$README_FILE" "\\*\\*using-git-worktrees\\*\\*" "README lists using-git-worktrees as core"
-assert_file_contains "$README_FILE" "\\*\\*writing-plans\\*\\*" "README lists writing-plans as core"
-assert_file_contains "$README_FILE" "\\*\\*subagent-driven-development\\*\\*" "README lists subagent-driven-development as core"
-assert_file_contains "$README_FILE" "\\*\\*systematic-debugging\\*\\*" "README lists systematic-debugging as core"
-assert_file_contains "$README_FILE" "\\*\\*executing-plans\\*\\*" "README lists executing-plans as support"
-assert_file_contains "$README_FILE" "\\*\\*dispatching-parallel-agents\\*\\*" "README lists dispatching-parallel-agents as support"
-assert_file_contains "$README_FILE" "Strict test-first discipline used inside implementation workflows" "README keeps TDD as implementation discipline"
+echo "Test 1: README documents fork identity and Claude Code install..."
+assert_file_contains "$README" "github.com/obra/superpowers" "README links upstream"
+assert_file_contains "$README" "^### Claude Code$" "README has a Claude Code install section"
+assert_file_contains "$README" "/plugin install superpowers@superpowers-dev" "README gives the Claude Code install command"
+assert_file_contains "$README" "bootstrap/claude-router.md" "README documents the compact router as the change"
 echo ""
 
-echo "Test 2: Default workflow ordering is preserved..."
-assert_file_contains "$REPO_ROOT/bootstrap/claude-router.md" "using-git-worktrees" "router includes using-git-worktrees"
-assert_file_contains "$BRAINSTORMING_FILE" "invoke .*using-git-worktrees" "brainstorming hands off to using-git-worktrees"
-assert_file_contains "$SUBAGENT_FILE" "test-driven-development" "subagent workflow keeps TDD companion skill"
+echo "Test 2: Router is the compact efficiency mechanism with upstream ordering..."
+for skill in brainstorming writing-plans using-git-worktrees subagent-driven-development systematic-debugging verification-before-completion requesting-code-review; do
+    assert_file_contains "$ROUTER" "$skill" "router references $skill"
+done
+# Ordering: brainstorming -> writing-plans -> using-git-worktrees -> subagent-driven-development
+order="$(grep -oE 'brainstorming|writing-plans|using-git-worktrees|subagent-driven-development' "$ROUTER" | awk '!seen[$0]++' | paste -sd, -)"
+if [ "$order" = "brainstorming,writing-plans,using-git-worktrees,subagent-driven-development" ]; then
+    echo "  [PASS] router preserves upstream workflow ordering ($order)"
+else
+    echo "  [FAIL] router ordering is $order"; exit 1
+fi
+assert_max_words "$ROUTER" 300 "router stays compact"
 echo ""
 
-echo "Test 3: Core skill output templates are present..."
-assert_file_contains "$BRAINSTORMING_FILE" "^## Output Templates$" "brainstorming has output templates section"
-assert_file_contains "$BRAINSTORMING_FILE" "Question message template" "brainstorming includes question template"
-assert_file_contains "$BRAINSTORMING_FILE" "Approach options template" "brainstorming includes approach template"
-assert_file_contains "$BRAINSTORMING_FILE" "Spec handoff template" "brainstorming includes spec handoff template"
-assert_file_contains "$WRITING_PLANS_FILE" "^## Output Templates$" "writing-plans has output templates section"
-assert_file_contains "$WRITING_PLANS_FILE" "Plan header template" "writing-plans includes plan header template"
-assert_file_contains "$WRITING_PLANS_FILE" "Execution choice template" "writing-plans includes execution choice template"
+echo "Test 3: Skills are upstream-faithful (not condensed, not model-pinned)..."
+assert_file_contains "$BRAINSTORMING" "terminal state is invoking writing-plans" "brainstorming hands off to writing-plans (upstream contract)"
+assert_file_contains "$BRAINSTORMING" "Too Simple To Need A Design" "brainstorming keeps the upstream anti-pattern guidance"
+assert_file_contains "$SDD" "test-driven-development" "subagent workflow keeps TDD companion skill"
+assert_file_lacks "$SDD" "Default all implementation and review subagents to Sonnet" "subagent workflow is NOT pinned to Sonnet"
+assert_min_words "$SYSDEBUG" 1000 "systematic-debugging is full upstream content"
+assert_min_words "$BRAINSTORMING" 1000 "brainstorming is full upstream content"
 echo ""
 
-echo "Test 4: Hot-path skills stay compact..."
-assert_max_words "$BRAINSTORMING_FILE" 1050 "brainstorming stays under hot-path budget"
-assert_max_words "$WRITING_PLANS_FILE" 640 "writing-plans stays under hot-path budget"
-assert_max_words "$SYSTEMATIC_DEBUGGING_FILE" 1050 "systematic-debugging stays under hot-path budget"
-assert_max_words "$SUBAGENT_FILE" 1050 "subagent-driven-development stays under hot-path budget"
+echo "Test 4: Startup payload is smaller than the upstream injection..."
+router_words="$(wc -w < "$ROUTER" | tr -d ' ')"
+using_words="$(wc -w < "$USING" | tr -d ' ')"
+if [ "$router_words" -lt "$using_words" ]; then
+    echo "  [PASS] router ($router_words w) < using-superpowers ($using_words w)"
+else
+    echo "  [FAIL] router not smaller than using-superpowers"; exit 1
+fi
 echo ""
 
 echo "=== All superpowers-lite static policy tests passed ==="

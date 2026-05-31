@@ -1,5 +1,18 @@
 # Superpowers Lite Verification Summary
 
+> **2026-05-30 update — superseded numbers below.** The repo was
+> re-synced so all skills are byte-identical to upstream `v5.1.0`. The
+> efficiency now comes solely from the compact startup router; skill
+> bodies are no longer condensed and the "hot-path size budget" claim
+> below no longer applies. Re-measured startup payload:
+>
+> - `bootstrap/claude-router.md`: 172 words, 1362 bytes
+> - `skills/using-superpowers/SKILL.md` (upstream injection): 787 words,
+>   5421 bytes
+> - reduction: **78.1% fewer words, 74.9% fewer bytes**
+>
+> The original 2026-04-20 summary is retained below as history.
+
 ## Conclusion
 
 The lite version clearly reduces default startup context while maintaining the core Superpowers workflow contract. The reduction is directly measured, the repo-local lite policy tests pass fresh, and a live Codex smoke test against this checkout still resolves and uses the current Superpowers guidance correctly.

@@ -94,17 +94,18 @@ Tests the Claude SessionStart hook output directly:
 
 #### test-subagent-driven-development-static.sh
 Tests repo-local policy in the skill file:
-- `subagent-driven-development` is the default execution path
-- Implementer and reviewer subagents default to Sonnet
-- Worktree, spec review, and code quality review requirements remain documented
+- the skill is NOT pinned to Sonnet (upstream role-based model guidance)
+- worktree, spec review, and code quality review requirements remain documented
+- `test-driven-development` is kept as a companion discipline
 
 #### test-superpowers-lite-static.sh
 Tests repo-local superpowers-lite policy:
-- README documents the core-routed vs support-skill split
-- `using-git-worktrees` remains in the default workflow
-- `subagent-driven-development` keeps `test-driven-development` as a companion discipline
-- `brainstorming` and `writing-plans` include explicit output templates
-- Hot-path skills stay within the compact size budget
+- README documents fork identity and the Claude Code install command
+- the compact router is the startup change and preserves upstream
+  workflow ordering
+- skills are upstream-faithful: not condensed and not model-pinned
+- the startup payload is materially smaller than the upstream
+  `using-superpowers` injection
 
 ### Integration Tests (use --integration flag)
 

@@ -5,6 +5,42 @@ still lives in the original project:
 
 - https://github.com/obra/superpowers
 
+## 2026-05-30
+
+### Lossless re-sync to upstream v5.1.0
+
+- re-synced all 14 skills (and their supporting files) to be
+  byte-identical to upstream `v5.1.0`. The previous fork state had
+  condensed several skill bodies (brainstorming, systematic-debugging,
+  writing-plans, subagent-driven-development, using-superpowers), which
+  changed behavior; that condensing is reverted so skills function the
+  same as upstream once invoked.
+- reverted the `subagent-driven-development` Sonnet model pin back to
+  upstream's role-based "least powerful model that can handle the task"
+  guidance, so the workflow runs on all harnesses without a hard-coded
+  model name.
+- kept the one intentional efficiency change: the `SessionStart` hook
+  injects the compact `bootstrap/claude-router.md` (~170 words) instead
+  of the full `using-superpowers` skill (~790 words) — a 78% word / 75%
+  byte reduction in startup payload. The full skill still loads on
+  demand.
+- corrected the router's workflow ordering to match upstream
+  (brainstorming → writing-plans → using-git-worktrees → execution).
+- bumped plugin/marketplace/package/gemini/cursor version metadata to
+  `5.1.0` to reflect the synced base.
+
+### Repo cleanup
+
+- added a Claude Code install section to the README (previously only
+  Codex and OpenCode were documented).
+- fixed broken absolute `/home/work/...` links in `README.md`,
+  `docs/README.codex.md`, and `docs/testing.md`.
+- rewrote the lite contract tests to assert the new design (efficiency
+  in the router; skills upstream-faithful and not model-pinned) instead
+  of the old condensed-skill assertions.
+- marked the earlier Codex CLI parity proof as historical (it was run
+  against the previous fork state).
+
 ## 2026-04-20
 
 ### Fork documentation cleanup

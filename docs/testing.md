@@ -30,16 +30,17 @@ expectations.
 ## Verification Artifacts
 
 The heavier proof artifacts live under
-[verification](/home/work/git/superpowers/verification):
+[verification](../verification):
 
 - `verification/lite/` for startup-weight reduction evidence
-- `verification/codex-cli-proof/` for the Codex CLI daily-use proof
+- `verification/codex-cli-proof/` for the earlier Codex CLI daily-use
+  proof (historical: run against the previous fork state)
 
 Start with:
 
-- [README.verification.md](/home/work/git/superpowers/README.verification.md)
-- [verification/lite/summary.md](/home/work/git/superpowers/verification/lite/summary.md)
-- [verification/codex-cli-proof/verdict.md](/home/work/git/superpowers/verification/codex-cli-proof/verdict.md)
+- [README.verification.md](../README.verification.md)
+- [verification/lite/summary.md](../verification/lite/summary.md)
+- [verification/codex-cli-proof/verdict.md](../verification/codex-cli-proof/verdict.md)
 
 ## Codex CLI Proof Scope
 
