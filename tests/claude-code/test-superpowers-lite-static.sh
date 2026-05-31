@@ -85,7 +85,11 @@ if [ "$order" = "brainstorming,writing-plans,using-git-worktrees,subagent-driven
 else
     echo "  [FAIL] router ordering is $order"; exit 1
 fi
-assert_max_words "$ROUTER" 300 "router stays compact"
+assert_max_words "$ROUTER" 400 "router stays compact"
+# The router carries the upstream adherence core so first-turn nagging
+# survives the lighter startup payload.
+assert_file_contains "$ROUTER" "1% chance" "router keeps the 1%-rule adherence pressure"
+assert_file_contains "$ROUTER" "STOP and check" "router keeps the red-flag STOP table"
 echo ""
 
 echo "Test 3: Skills are upstream-faithful (not condensed, not model-pinned)..."
