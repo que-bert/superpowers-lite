@@ -1,7 +1,7 @@
 # Lite Verification README
 
 > **2026-05-30:** The repo was re-synced so all skills are byte-identical
-> to upstream `v5.1.0`. Efficiency now comes solely from the compact
+> to upstream `v6.1.1`. Efficiency now comes solely from the compact
 > startup router (172 vs 787 words injected at startup; ~78% smaller).
 > The earlier "hot-path skill budget" claims and the Codex CLI parity
 > proof in `verification/codex-cli-proof/` reflect the previous fork

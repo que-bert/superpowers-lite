@@ -25,7 +25,7 @@ install.
 Use this fork if you want:
 
 - the lighter startup router introduced here
-- the same skills, kept in sync with upstream (currently `v5.1.0`)
+- the same skills, kept in sync with upstream (currently `v6.1.1`)
 - fork-specific verification artifacts and proof notes
 
 The fork intentionally preserves upstream-compatible names where they
@@ -41,7 +41,7 @@ upstream:
   (`bootstrap/claude-router.md`, ~170 words) instead of the full
   `using-superpowers` skill (~790 words). The full skill is still
   available and loads on demand when invoked.
-- **Unchanged:** all 14 skills are byte-identical to upstream `v5.1.0`.
+- **Unchanged:** all 14 skills are byte-identical to upstream `v6.1.1`.
   Nothing in any skill body is trimmed, reordered, or model-pinned. Once
   a skill runs, behavior matches upstream exactly.
 
@@ -108,7 +108,7 @@ The startup router steers the standard upstream workflow:
 ### Full Skill Library
 
 All upstream skills ship and are available for manual or autonomous
-invocation, identical to upstream `v5.1.0`:
+invocation, identical to upstream `v6.1.1`:
 
 `brainstorming`, `writing-plans`, `using-git-worktrees`,
 `subagent-driven-development`, `executing-plans`,
@@ -136,7 +136,7 @@ Repo-local contract tests (`tests/claude-code/`) verify that:
   `using-superpowers` skill
 - the router preserves the upstream workflow ordering
 - the skills are not condensed and the Sonnet model pin is not present
-  (i.e., they match the upstream `v5.1.0` contract)
+  (i.e., they match the upstream `v6.1.1` contract)
 
 See [README.verification.md](README.verification.md) and the
 [verification](verification/) directory. The earlier Codex CLI parity

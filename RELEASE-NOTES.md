@@ -5,6 +5,20 @@ still lives in the original project:
 
 - https://github.com/obra/superpowers
 
+## 2026-07-17
+
+### Lossless re-sync to upstream v6.1.1
+
+- `skills/` replaced byte-for-byte with upstream Superpowers `v6.1.1`
+  (verified: `diff -rq` empty against the official plugin cache). Picks
+  up the reworked `subagent-driven-development` (implementer/task-reviewer
+  prompts + `scripts/` harness), `writing-skills`, `using-superpowers`,
+  and drift in 10 other skills since `v5.1.0`.
+- Version metadata bumped to `6.1.1` across plugin manifests and docs.
+- Router unchanged (233 words). Both repo-local contract suites pass:
+  `test-session-start-router.sh`, `test-superpowers-lite-static.sh`.
+  Startup payload vs upstream 6.1.1 injection: 233 vs 481 words.
+
 ## 2026-05-30
 
 ### Lossless re-sync to upstream v5.1.0

@@ -68,7 +68,7 @@ Codex CLI performs native skill discovery from `~/.agents/skills/`. This
 fork relies on that behavior directly rather than adding another startup
 layer on top of Codex.
 
-Because the skill library is kept byte-identical to upstream `v5.1.0`,
+Because the skill library is kept byte-identical to upstream `v6.1.1`,
 Codex sees the same skills as upstream Superpowers. The fork's only
 change (the compact Claude `SessionStart` router) does not affect Codex,
 which discovers skills natively from disk.
