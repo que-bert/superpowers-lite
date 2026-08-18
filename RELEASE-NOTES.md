@@ -63,6 +63,26 @@ compliance review") were **already failing at the previous commit** and are
 untouched here — they assert content upstream removed at or before `v6.2.0`
 and need a separate decision about whether the fork still wants it.
 
+### Removed the three deprecated command shims
+
+`commands/brainstorm.md`, `commands/write-plan.md`, and
+`commands/execute-plan.md` are gone, along with the now-dangling `commands`
+entry in `.cursor-plugin/plugin.json`. Each was a ~262-byte stub whose entire
+body told the user the command was deprecated and to use the skill instead.
+
+They were removed for correctness, not tokens. They surfaced in the session
+skill list as three invocable entries sitting directly beside the real skills
+they shadowed — `/brainstorm` next to `brainstorming`, `/write-plan` next to
+`writing-plans` — so their only reachable function was to be selected by
+mistake and then decline. Nothing in the repo referenced them; the `/commands/`
+line in `scripts/sync-to-codex-plugin.sh` is an exclusion list, so it stays
+correct as a no-op.
+
+Measured saving is about 90 tokens of always-on context (`claude plugin
+details` reports ~30 each), against a plugin total of ~1,124 always-on plus
+~427 for the router injection. That is under 1% of a session start and is not
+why this was done.
+
 ### Verification numbers refreshed
 
 README figures were measured against `v6.1.1` and had gone stale. Upstream
