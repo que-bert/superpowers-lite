@@ -38,10 +38,10 @@ The fork makes exactly one runtime change and keeps everything else
 upstream:
 
 - **Changed:** the `SessionStart` hook injects a compact router
-  (`bootstrap/claude-router.md`, ~170 words) instead of the full
-  `using-superpowers` skill (~790 words). The full skill is still
+  (`bootstrap/claude-router.md`, ~230 words) instead of the full
+  `using-superpowers` skill (~485 words). The full skill is still
   available and loads on demand when invoked.
-- **Unchanged:** all 14 skills are byte-identical to upstream `v6.1.1`.
+- **Unchanged:** all 14 skills are byte-identical to upstream `v6.3.0`.
   Nothing in any skill body is trimmed, reordered, or model-pinned. Once
   a skill runs, behavior matches upstream exactly.
 
@@ -125,10 +125,15 @@ not remove any skill from the library or change any skill's behavior.
 
 Measured on this checkout (router vs. the upstream startup injection):
 
-- `bootstrap/claude-router.md`: 172 words, 1362 bytes
-- `skills/using-superpowers/SKILL.md` (what upstream injects): 787 words,
-  5421 bytes
-- Startup payload reduction: **78.1% fewer words, 74.9% fewer bytes**
+- `bootstrap/claude-router.md`: 230 words, 1665 bytes
+- `skills/using-superpowers/SKILL.md` (what upstream injects): 485 words,
+  3108 bytes
+- Startup payload reduction: **52.6% fewer words, 46.4% fewer bytes**
+
+  The gap narrowed at `v6.3.0`: upstream trimmed `using-superpowers`
+  substantially, so the router's advantage is real but smaller than the
+  figures quoted here before 2026-08-18, which were measured against
+  `v6.1.1` and had gone stale.
 
 Repo-local contract tests (`tests/claude-code/`) verify that:
 

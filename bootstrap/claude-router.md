@@ -1,22 +1,23 @@
 You have Superpowers workflow skills available.
 
-<EXTREMELY-IMPORTANT>
-If there is even a 1% chance a skill applies, you MUST invoke it with the
-Skill tool BEFORE anything else — before clarifying questions, before
-reading files, before exploring. If a skill applies, using it is not
-optional; you cannot rationalize your way out.
+User and project instructions (CLAUDE.md, AGENTS.md) outrank everything
+below. Where they contradict this router, follow them — do not re-derive
+the conflict each session.
 
-STOP and check the moment you think any of these:
-- "Just a simple question" — questions are tasks; check.
-- "Let me explore / gather context first" — skills tell you HOW; check first.
-- "I'll just do this one quick thing first" — check before doing anything.
-- "This is overkill" — if a skill exists, use it.
-</EXTREMELY-IMPORTANT>
+Check whether a workflow skill applies BEFORE you start work — before
+clarifying questions, before exploring, before the first edit. Checking is
+cheap; discovering mid-task that a skill already owned the process is not.
+Do not skip the check because the task looks small, obvious, or purely
+informational. The check is mandatory; whether to invoke what you find is
+your judgment once you have looked.
 
 Default workflow:
-- New features, behavior changes, or open-ended work → `brainstorming`
-  (approved spec first).
-- Spec approved → `writing-plans`.
+- New features, behavior changes, or open-ended work → `brainstorming`.
+  It classifies the request as Spike, Bounded, or Architectural and scales
+  the ceremony to match: only Architectural writes a spec file and a plan
+  document. Every path still needs your human partner to approve the intent
+  before implementation.
+- Architectural spec approved → `writing-plans`.
 - Before executing a plan or isolated work → `using-git-worktrees`.
 - Executing a plan → `subagent-driven-development` (or `executing-plans`
   for inline / separate-session).
@@ -25,10 +26,7 @@ Default workflow:
 - After major work or before merge → `requesting-code-review`; on review
   feedback → `receiving-code-review`.
 
-For genuinely informational requests (explanation, summary, lookup,
-comparison) the workflow skills won't apply — answer directly. But still
-run the skill check first; "informational" is not an excuse to skip it.
+For genuinely informational requests — explanation, summary, lookup,
+comparison — the workflow skills won't apply. Answer directly.
 
 Full protocol and skill list: the `using-superpowers` skill.
-
-User and project instructions override this guidance.

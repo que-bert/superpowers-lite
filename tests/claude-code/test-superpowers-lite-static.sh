@@ -86,15 +86,28 @@ else
     echo "  [FAIL] router ordering is $order"; exit 1
 fi
 assert_max_words "$ROUTER" 400 "router stays compact"
-# The router carries the upstream adherence core so first-turn nagging
-# survives the lighter startup payload.
-assert_file_contains "$ROUTER" "1% chance" "router keeps the 1%-rule adherence pressure"
-assert_file_contains "$ROUTER" "STOP and check" "router keeps the red-flag STOP table"
+# The router carries an adherence core so the check still happens on the
+# first turn under the lighter startup payload. It asserts the MECHANISM,
+# not the wording: the absolutist "1% chance / STOP and check" form was
+# retired 2026-08-18 because it was contradicted by user CLAUDE.md every
+# session, which inverted salience (an <EXTREMELY-IMPORTANT> block whose
+# override was unmarked plain text). See RELEASE-NOTES.md.
+assert_file_contains "$ROUTER" "BEFORE you start work" "router mandates a pre-work skill check"
+assert_file_contains "$ROUTER" "check is mandatory" "router keeps the check non-optional"
+# Precedence must be stated early, not buried, so it is not re-litigated.
+assert_file_contains "$ROUTER" "outrank" "router states user/project precedence"
 echo ""
 
 echo "Test 3: Skills are upstream-faithful (not condensed, not model-pinned)..."
-assert_file_contains "$BRAINSTORMING" "terminal state is invoking writing-plans" "brainstorming hands off to writing-plans (upstream contract)"
-assert_file_contains "$BRAINSTORMING" "Too Simple To Need A Design" "brainstorming keeps the upstream anti-pattern guidance"
+# Upstream 6.3.0 made terminal states path-bound (Spike / Bounded /
+# Architectural), so the old flat "terminal state is invoking writing-plans"
+# sentence is gone. The contract survives for the Architectural path; assert
+# that, plus the classification itself, rather than the retired wording.
+assert_file_contains "$BRAINSTORMING" "invoke after brainstorming is writing-plans" "brainstorming hands off to writing-plans (architectural path)"
+assert_file_contains "$BRAINSTORMING" "Terminal states are path-bound" "brainstorming scales ceremony by path (6.3.0)"
+# 6.3.0 renamed this section: the gate moved from "needs a design doc" to
+# "needs approval", because ceremony is now path-scoped but approval is not.
+assert_file_contains "$BRAINSTORMING" "Too Simple To Need Approval" "brainstorming keeps the upstream anti-pattern guidance"
 assert_file_contains "$SDD" "test-driven-development" "subagent workflow keeps TDD companion skill"
 assert_file_lacks "$SDD" "Default all implementation and review subagents to Sonnet" "subagent workflow is NOT pinned to Sonnet"
 assert_min_words "$SYSDEBUG" 1000 "systematic-debugging is full upstream content"
